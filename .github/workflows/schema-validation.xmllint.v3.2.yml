@@ -1,4 +1,4 @@
-name: Validate iTop datamodel XML version 3.2
+name: Validate iTop datamodel XML version 3.2 (xmllint)
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ jobs:
 
     - name: Install xmllint (libxml2-utils)
       run: |
-        sudo apt-get update
+        sudo apt-get -qq update
         sudo apt-get install -y libxml2-utils
 
     - name: Verify files exist
