@@ -1142,7 +1142,7 @@
                                                             </xs:choice>
                                                             <xs:attribute name="id" type="xs:string" use="required" />
                                                             <xs:attributeGroup ref="alteredNode" />
-                                                            <xs:anyAttribute />
+                                                            <xs:anyAttribute processContents="lax" />
                                                         </xs:complexType>
                                                     </xs:element>
                                                 </xs:sequence>
