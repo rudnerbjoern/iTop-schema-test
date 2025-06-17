@@ -1,0 +1,34 @@
+{
+    "cSpell.words": [
+        "attcode",
+        "autoincrement",
+        "cmdb",
+        "CMDB",
+        "Combodo",
+        "dashlet",
+        "dashlets",
+        "extkey",
+        "fileref",
+        "Hipska",
+        "ITSM",
+        "jointype",
+        "metavalue",
+        "metavalues",
+        "mgmt",
+        "MOVEUP",
+        "neighbour",
+        "neighbours",
+        "Nihilo",
+        "noout",
+        "stylesheet",
+        "teemip",
+        "Zlist"
+    ],
+    "xml.codeLens.enabled": true,
+    "xml.format.emptyElements": "collapse",
+    "xml.format.maxLineWidth": 0,
+    "xml.format.preserveSpace": [
+        "xs:documentation"
+    ],
+    "xml.format.spaceBeforeEmptyCloseTag": true,
+}

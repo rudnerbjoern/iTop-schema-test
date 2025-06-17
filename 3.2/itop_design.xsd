@@ -2,7 +2,9 @@
 <xs:schema version="3.2" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:element name="itop_design">
         <xs:annotation>
-            <xs:documentation source="https://www.itophub.io/wiki/page?id=3_2_0:customization:xml_reference#xml_general_structure"> Structural node. No comments are allowed before this tag. </xs:documentation>
+            <xs:documentation source="https://www.itophub.io/wiki/page?id=3_2_0:customization:xml_reference#xml_general_structure">
+                Structural node. No comments are allowed before this tag.
+            </xs:documentation>
         </xs:annotation>
         <xs:complexType>
             <xs:all>
@@ -400,7 +402,9 @@
                                                                 </xs:element>
                                                                 <xs:element name="arguments" minOccurs="0">
                                                                     <xs:annotation>
-                                                                        <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:form_prefill"> Use definition from https://www.itophub.io/wiki/page?id=latest:customization:form_prefill </xs:documentation>
+                                                                        <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:form_prefill">
+                                                                            Use definition from https://www.itophub.io/wiki/page?id=latest:customization:form_prefill
+                                                                        </xs:documentation>
                                                                     </xs:annotation>
                                                                     <xs:complexType>
                                                                         <xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -591,7 +595,9 @@
                 </xs:element>
                 <xs:element name="files" minOccurs="0">
                     <xs:annotation>
-                        <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:xml_reference#files"> The “files” structure allow to embed binary files (for examples image files used for the object's icons) directly in an XML delta definition file. </xs:documentation>
+                        <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:xml_reference#files">
+                            The “files” structure allow to embed binary files (for examples image files used for the object's icons) directly in an XML delta definition file.
+                        </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
                         <xs:sequence maxOccurs="unbounded">
@@ -601,7 +607,9 @@
                 </xs:element>
                 <xs:element name="dictionaries" minOccurs="0">
                     <xs:annotation>
-                        <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:xml_reference#dictionaries"> For adding localizations into the XML. </xs:documentation>
+                        <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:xml_reference#dictionaries">
+                            For adding localizations into the XML.
+                        </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
                         <xs:sequence>
@@ -915,7 +923,7 @@
                                         <xs:element name="properties" minOccurs="0">
                                             <xs:complexType>
                                                 <xs:choice maxOccurs="unbounded">
-                                                    <xs:any />
+                                                    <xs:any processContents="lax" />
                                                 </xs:choice>
                                             </xs:complexType>
                                         </xs:element>
@@ -1131,8 +1139,22 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
-                                        <xs:element name="navigation_rules" minOccurs="0" />
-
+                                        <xs:element name="navigation_rules" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence maxOccurs="unbounded">
+                                                    <xs:element name="navigation_rule" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:choice maxOccurs="unbounded">
+                                                                <xs:element name="id" type="xs:string" />
+                                                                <xs:any processContents="lax" />
+                                                            </xs:choice>
+                                                            <xs:attribute name="id" type="xs:string" use="required" />
+                                                            <xs:attributeGroup ref="alteredNode" />
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
                                     </xs:all>
                                     <xs:attribute name="id" type="xs:string" use="required" />
                                     <xs:attributeGroup ref="alteredNode" />
@@ -1168,7 +1190,10 @@
                 </xs:element>
                 <xs:element name="meta" minOccurs="0">
                     <xs:annotation>
-                        <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:xml_reference#meta"> Usage of this tag is restricted to Combodo for driving ITSM Designer behavior. It is used to declare in XML stuff which are in PHP code and need to be known and manipulate by the ITSM Designer. </xs:documentation>
+                        <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:xml_reference#meta">
+                            Usage of this tag is restricted to Combodo for driving ITSM Designer behavior.
+                            It is used to declare in XML stuff which are in PHP code and need to be known and manipulate by the ITSM Designer.
+                        </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
                         <xs:all>
@@ -1182,7 +1207,7 @@
                             <xs:element name="presentation" minOccurs="0">
                                 <xs:complexType>
                                     <xs:choice maxOccurs="unbounded">
-                                        <xs:any />
+                                        <xs:any processContents="lax" />
                                     </xs:choice>
                                 </xs:complexType>
                             </xs:element>
@@ -1268,7 +1293,7 @@
                             <xs:element name="listener" minOccurs="0" maxOccurs="unbounded">
                                 <xs:complexType>
                                     <xs:choice maxOccurs="unbounded">
-                                        <xs:any />
+                                        <xs:any processContents="lax" />
                                     </xs:choice>
                                     <xs:attribute name="id" type="xs:string" use="required" />
                                     <xs:attributeGroup ref="alteredNode" />
@@ -1296,7 +1321,15 @@
 
     <xs:attributeGroup name="alteredNode">
         <xs:annotation>
-            <xs:documentation> Metadata attributes for tracking modifications to XML nodes within iTop datamodel delta files. - _delta: Controls how the node should be merged or modified during import. - _rename_from: If present, indicates the node was renamed from another identifier. - _created_in: Marks the module or context where the node was initially created. - _revision_id: Internal revision tracking number. - _altered_in: Identifies the module or source responsible for the change. - _alteration: Describes the type of change (e.g., added, removed, forced). </xs:documentation>
+            <xs:documentation>
+                Metadata attributes for tracking modifications to XML nodes within iTop datamodel delta files.
+                - _delta: Controls how the node should be merged or modified during import.
+                - _rename_from: If present, indicates the node was renamed from another identifier.
+                - _created_in: Marks the module or context where the node was initially created.
+                - _revision_id: Internal revision tracking number.
+                - _altered_in: Identifies the module or source responsible for the change.
+                - _alteration: Describes the type of change (e.g., added, removed, forced).
+            </xs:documentation>
         </xs:annotation>
         <xs:attribute name="_delta" use="optional" default="merge">
             <xs:simpleType>
@@ -1333,7 +1366,11 @@
 
     <xs:complexType name="alteredString">
         <xs:annotation>
-            <xs:documentation> A string value with metadata for tracking modifications in delta XML files. This type extends a plain string (xs:string) with attributes from the alteredNode group, allowing to describe how and when the string was changed, created, renamed, or deleted. </xs:documentation>
+            <xs:documentation>
+                A string value with metadata for tracking modifications in delta XML files.
+                This type extends a plain string (xs:string) with attributes from the alteredNode group,
+                allowing to describe how and when the string was changed, created, renamed, or deleted.
+            </xs:documentation>
         </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="xs:string">
@@ -1344,7 +1381,11 @@
 
     <xs:complexType name="alteredFloat">
         <xs:annotation>
-            <xs:documentation> A float value extended with metadata for tracking changes in delta XML files. This type allows numeric content (xs:float) to carry alteration attributes from the alteredNode group, indicating how the value was introduced, modified, or removed in the datamodel. </xs:documentation>
+            <xs:documentation>
+                A float value extended with metadata for tracking changes in delta XML files.
+                This type allows numeric content (xs:float) to carry alteration attributes from the alteredNode group,
+                indicating how the value was introduced, modified, or removed in the datamodel.
+            </xs:documentation>
         </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="xs:float">
@@ -1428,7 +1469,10 @@
     <!-- ########################### Stimuli ########################### -->
     <xs:complexType name="StimulusBase" abstract="true">
         <xs:annotation>
-            <xs:documentation> Abstract base type for state transition stimuli in iTop lifecycle. Defines the common structure: a required 'id' and metadata via alteredNode. </xs:documentation>
+            <xs:documentation>
+                Abstract base type for state transition stimuli in iTop lifecycle.
+                Defines the common structure: a required 'id' and metadata via alteredNode.
+            </xs:documentation>
         </xs:annotation>
         <xs:attribute name="id" type="xs:string" use="required" />
         <xs:attributeGroup ref="alteredNode" />
@@ -1436,7 +1480,10 @@
 
     <xs:complexType name="StimulusUserAction">
         <xs:annotation>
-            <xs:documentation> A stimulus representing an action explicitly triggered by the end-user. It is shown in the Actions menu when the object is in a compatible state. </xs:documentation>
+            <xs:documentation>
+                A stimulus representing an action explicitly triggered by the end-user.
+                It is shown in the Actions menu when the object is in a compatible state.
+            </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
             <xs:extension base="StimulusBase" />
@@ -1445,7 +1492,10 @@
 
     <xs:complexType name="StimulusInternal">
         <xs:annotation>
-            <xs:documentation> A stimulus that is triggered programmatically by the application, not visible or directly accessible to the end-user. </xs:documentation>
+            <xs:documentation>
+                A stimulus that is triggered programmatically by the application,
+                not visible or directly accessible to the end-user.
+            </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
             <xs:extension base="StimulusBase" />
@@ -1456,42 +1506,54 @@
     <!-- ########################### action parameters ########################### -->
     <xs:simpleType name="string">
         <xs:annotation>
-            <xs:documentation> iTop-specific alias for xs:string. </xs:documentation>
+            <xs:documentation>
+                iTop-specific alias for xs:string.
+            </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string" />
     </xs:simpleType>
 
     <xs:simpleType name="int">
         <xs:annotation>
-            <xs:documentation> iTop-specific alias for xs:integer. </xs:documentation>
+            <xs:documentation>
+                iTop-specific alias for xs:integer.
+            </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:integer" />
     </xs:simpleType>
 
     <xs:simpleType name="float">
         <xs:annotation>
-            <xs:documentation> iTop-specific alias for xs:float. </xs:documentation>
+            <xs:documentation>
+                iTop-specific alias for xs:float.
+            </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:float" />
     </xs:simpleType>
 
     <xs:simpleType name="reference">
         <xs:annotation>
-            <xs:documentation> iTop-specific alias for a string representing an object reference. </xs:documentation>
+            <xs:documentation>
+                iTop-specific alias for a string representing an object reference.
+            </xs:documentation>
         </xs:annotation>
         <xs:restriction base="string" />
     </xs:simpleType>
 
     <xs:simpleType name="attcode">
         <xs:annotation>
-            <xs:documentation> iTop-specific alias for a string representing an attribute code. </xs:documentation>
+            <xs:documentation>
+                iTop-specific alias for a string representing an attribute code.
+            </xs:documentation>
         </xs:annotation>
         <xs:restriction base="string" />
     </xs:simpleType>
 
     <xs:simpleType name="variables">
         <xs:annotation>
-            <xs:documentation> iTop-specific alias for a string containing variable placeholders or expressions. </xs:documentation>
+            <xs:documentation>
+                iTop-specific alias for a string containing variable placeholders or expressions.
+            </xs:documentation>
         </xs:annotation>
         <xs:restriction base="string" />
     </xs:simpleType>
@@ -1503,7 +1565,10 @@
 
     <xs:complexType name="AttributeDefinition">
         <xs:annotation>
-            <xs:documentation> Base type for all attribute definitions in the iTop datamodel. Includes a required 'id' and alteration metadata from the alteredNode group. </xs:documentation>
+            <xs:documentation>
+                Base type for all attribute definitions in the iTop datamodel.
+                Includes a required 'id' and alteration metadata from the alteredNode group.
+            </xs:documentation>
         </xs:annotation>
         <xs:attribute name="id" type="xs:string" use="required" />
         <xs:attributeGroup ref="alteredNode" />
@@ -1511,7 +1576,10 @@
 
     <xs:complexType name="dependenciesType">
         <xs:annotation>
-            <xs:documentation> Defines a list of attribute dependencies within the iTop datamodel. Each dependency refers to an attribute by its 'id'. </xs:documentation>
+            <xs:documentation>
+                Defines a list of attribute dependencies within the iTop datamodel.
+                Each dependency refers to an attribute by its 'id'.
+            </xs:documentation>
         </xs:annotation>
         <xs:sequence maxOccurs="unbounded">
             <xs:element name="attribute">
@@ -1524,7 +1592,10 @@
 
     <xs:simpleType name="trackingLevelEnumeration">
         <xs:annotation>
-            <xs:documentation> Adjusts the recording of changes (history tab) in iTop. Possible values: 'none' (no history), 'all' (full history). Defaults to 'all'. </xs:documentation>
+            <xs:documentation>
+                Adjusts the recording of changes (history tab) in iTop.
+                Possible values: 'none' (no history), 'all' (full history). Defaults to 'all'.
+            </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
             <xs:enumeration value="none" />
@@ -1534,7 +1605,10 @@
 
     <xs:simpleType name="enumSortEnumeration">
         <xs:annotation>
-            <xs:documentation> Determines how enumeration values are sorted in the user interface. Allowed values: 'code' (sort by internal value), 'label' (sort by display label), 'rank' (custom order). </xs:documentation>
+            <xs:documentation>
+                Determines how enumeration values are sorted in the user interface.
+                Allowed values: 'code' (sort by internal value), 'label' (sort by display label), 'rank' (custom order).
+            </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
             <xs:enumeration value="code" />
@@ -1545,7 +1619,10 @@
 
     <xs:simpleType name="displayStyleEnumeration">
         <xs:annotation>
-            <xs:documentation> Defines how a field with multiple choices is rendered in the iTop user interface. Allowed values: 'list', 'select' (same as 'list'), 'radio_horizontal', 'radio_vertical', or 'radio' (same as 'radio_vertical'). </xs:documentation>
+            <xs:documentation>
+                Defines how a field with multiple choices is rendered in the iTop user interface.
+                Allowed values: 'list', 'select' (same as 'list'), 'radio_horizontal', 'radio_vertical', or 'radio' (same as 'radio_vertical').
+            </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
             <xs:enumeration value="list" />
@@ -1558,7 +1635,11 @@
 
     <xs:simpleType name="onTargetDeleteEnumeration">
         <xs:annotation>
-            <xs:documentation> Defines how the deletion of the target object impacts the current object. Allowed values: 'DEL_MANUAL' (manual cleanup), 'DEL_AUTO' (automatic deletion). Other values like 'DEL_MOVEUP' and 'DEL_SILENT' are reserved for internal use. </xs:documentation>
+            <xs:documentation>
+                Defines how the deletion of the target object impacts the current object.
+                Allowed values: 'DEL_MANUAL' (manual cleanup), 'DEL_AUTO' (automatic deletion).
+                Other values like 'DEL_MOVEUP' and 'DEL_SILENT' are reserved for internal use.
+            </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
             <xs:enumeration value="DEL_MANUAL" />
