@@ -11,11 +11,11 @@
         <class id="Delta2" _delta="define_if_not_exists" />
         <class id="Delta3" _delta="delete" />
         <class id="Delta4" _delta="delete_if_exists" />
-        <class id="Delta5" _delta="force" />
-        <class id="Delta6" _delta="if_exists" />
-        <class id="Delta7" _delta="merge" />
-        <class id="Delta8" _delta="must_exist" />
-        <class id="Delta9" _delta="redefine" />
+        <class id="Delta5" _delta="force" _alteration="forced" />
+        <class id="Delta6" _delta="if_exists" _alteration="remove_needed" />
+        <class id="Delta7" _delta="merge" _alteration="removed" />
+        <class id="Delta8" _delta="must_exist" _alteration="replaced" />
+        <class id="Delta9" _delta="redefine" _alteration="needed" />
         <class id="Delta10" _delta="merge" _alteration="added" _altered_in="altered-in" _created_in="created-in" _rename_from="renamed-from" _revision_id="10" />
         <class id="TestClass1">
             <parent>ParentClass</parent>
