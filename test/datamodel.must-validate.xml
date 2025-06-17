@@ -16,6 +16,7 @@
         <class id="Delta7" _delta="merge" />
         <class id="Delta8" _delta="must_exist" />
         <class id="Delta9" _delta="redefine" />
+        <class id="Delta10" _delta="merge" _alteration="added" _altered_in="altered-in" _created_in="created-in" _rename_from="renamed-from" _revision_id="10" />
         <class id="TestClass1">
             <parent>ParentClass</parent>
             <php_parent>
