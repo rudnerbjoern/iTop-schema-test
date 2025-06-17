@@ -1131,23 +1131,7 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
-                                        <xs:element name="navigation_rules" minOccurs="0">
-                                            <xs:complexType>
-                                                <xs:sequence maxOccurs="unbounded">
-                                                    <xs:element name="navigation_rule" maxOccurs="unbounded">
-                                                        <xs:complexType>
-                                                            <xs:choice maxOccurs="unbounded">
-                                                                <xs:element name="id" type="xs:string" />
-                                                                <xs:any processContents="lax" />
-                                                            </xs:choice>
-                                                            <xs:attribute name="id" type="xs:string" use="required" />
-                                                            <xs:attributeGroup ref="alteredNode" />
-                                                            <xs:anyAttribute processContents="lax" />
-                                                        </xs:complexType>
-                                                    </xs:element>
-                                                </xs:sequence>
-                                            </xs:complexType>
-                                        </xs:element>
+                                        <xs:element name="navigation_rules" minOccurs="0" />
 
                                     </xs:all>
                                     <xs:attribute name="id" type="xs:string" use="required" />
