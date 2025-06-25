@@ -19,14 +19,15 @@ def resolve_includes(tree, base_path):
             continue
         included_path = os.path.normpath(os.path.join(base_path, href))
         if included_path in included_files:
+            print(f"Already included: {included_path}")
             root.remove(include)
             continue
-        print(f"Including: {included_path}")
+        print(f"Parsing and including: {included_path}")
         included_tree = etree.parse(included_path, etree.XMLParser(remove_blank_text=True))
         resolve_includes(included_tree, os.path.dirname(included_path))
         included_root = included_tree.getroot()
         for child in included_root:
-            if child.tag != INCLUDE_TAG:  # avoid nested includes
+            if child.tag != INCLUDE_TAG:
                 root.append(child)
         root.remove(include)
         included_files.add(included_path)
@@ -39,9 +40,13 @@ def main():
     input_file = sys.argv[1]
     output_file = sys.argv[2]
 
+    print(f"Input file: {input_file}")
+    print(f"Output file: {output_file}")
+
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
     parser = etree.XMLParser(remove_blank_text=True)
+    print("Parsing master schema...")
     master_tree = etree.parse(input_file, parser)
     resolve_includes(master_tree, os.path.dirname(input_file))
 
@@ -62,6 +67,7 @@ def main():
     # Write to a temporary file first
     with tempfile.NamedTemporaryFile("wb", delete=False) as tmp:
         temp_path = tmp.name
+        print(f"Writing combined schema to temporary file: {temp_path}")
         master_tree.write(
             tmp,
             pretty_print=True,
@@ -69,6 +75,7 @@ def main():
             encoding="UTF-8"
         )
 
+    print(f"Moving temporary file to final destination: {output_file}")
     shutil.move(temp_path, output_file)
     print(f"✅ Combined schema written to: {output_file}")
 
