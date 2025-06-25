@@ -53,9 +53,13 @@ jobs:
 
       - name: Beautify and normalize XSD with xmlstarlet
         run: |
-          xmlstarlet fo --omit-decl $OUTPUT_FILE > tmp.xml && mv tmp.xml $OUTPUT_FILE
-          xmlstarlet ed -P -L -u "//xs:documentation/text()" -x "normalize-space(.)" $OUTPUT_FILE
-          rm -f tmp.xml
+          if xmlstarlet fo --omit-decl "$OUTPUT_FILE" > tmp.xml; then
+            mv tmp.xml "$OUTPUT_FILE"
+            xmlstarlet ed -P -L -u "//xs:documentation/text()" -x "normalize-space(.)" "$OUTPUT_FILE"
+          else
+            echo "xmlstarlet formatting failed"
+            exit 1
+          fi
 
       - name: Upload merged XSD as artifact
         uses: actions/upload-artifact@v4
