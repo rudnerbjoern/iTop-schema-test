@@ -7,7 +7,7 @@ NSMAP = {"xs": XSD_NS}
 INCLUDE_TAG = f"{{{XSD_NS}}}include"
 
 if len(sys.argv) != 3:
-    print("Usage: python combine_xsd_schema.py <input_file> <output_file>")
+    print("Usage: python combine_schema.py <input_file> <output_file>")
     sys.exit(1)
 
 MASTER_FILE = sys.argv[1]

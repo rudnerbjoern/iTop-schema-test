@@ -32,4 +32,4 @@ jobs:
         run: pip install -r scripts/requirements.txt
 
       - name: Validate XML datamodel against schema
-        run: python scripts/validate_datamodel.py $XSD_PATH $XML_PATH
+        run: python scripts/validate_xml.py $XSD_PATH $XML_PATH
