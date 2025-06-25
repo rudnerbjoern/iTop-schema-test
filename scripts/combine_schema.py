@@ -62,7 +62,7 @@ def main():
     # Write to a temporary file first
     with tempfile.NamedTemporaryFile("wb", delete=False) as tmp:
         temp_path = tmp.name
-        etree.ElementTree(root).write(
+        master_tree.write(
             tmp,
             pretty_print=True,
             xml_declaration=True,
