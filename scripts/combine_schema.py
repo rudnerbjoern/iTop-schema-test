@@ -6,13 +6,6 @@ XSD_NS = "http://www.w3.org/2001/XMLSchema"
 NSMAP = {"xs": XSD_NS}
 INCLUDE_TAG = f"{{{XSD_NS}}}include"
 
-if len(sys.argv) != 3:
-    print("Usage: python combine_schema.py <input_file> <output_file>")
-    sys.exit(1)
-
-MASTER_FILE = sys.argv[1]
-OUTPUT_FILE = sys.argv[2]
-
 included_files = set()
 
 def resolve_includes(tree, base_path):
@@ -31,19 +24,28 @@ def resolve_includes(tree, base_path):
         resolve_includes(included_tree, os.path.dirname(included_path))
         included_root = included_tree.getroot()
         for child in included_root:
-            root.append(child)
+            if child.tag != INCLUDE_TAG:  # avoid nested includes
+                root.append(child)
         root.remove(include)
         included_files.add(included_path)
 
-os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
+def main():
+    if len(sys.argv) != 3:
+        print("Usage: python combine_schema.py <input_file> <output_file>")
+        sys.exit(1)
 
-parser = etree.XMLParser(remove_blank_text=True)
-master_tree = etree.parse(MASTER_FILE, parser)
-resolve_includes(master_tree, os.path.dirname(MASTER_FILE))
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
 
-# Add project comment before root
-root = master_tree.getroot()
-comment = etree.Comment(
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+    parser = etree.XMLParser(remove_blank_text=True)
+    master_tree = etree.parse(input_file, parser)
+    resolve_includes(master_tree, os.path.dirname(input_file))
+
+    # Füge Kommentar vor das Root-Element ein
+    root = master_tree.getroot()
+    comment = etree.Comment(
     """
   This schema file was automatically generated from modular XSD components.
   Provided by the iTop-schema project by Björn Rudner.
@@ -53,15 +55,16 @@ comment = etree.Comment(
 
   Use this file to validate your iTop datamodels with confidence and consistency.
     """
-)
-root.addprevious(comment)
+    )
+    root.addprevious(comment)
 
-# Write formatted output
-etree.ElementTree(root).write(
-    OUTPUT_FILE,
-    pretty_print=True,
-    xml_declaration=True,
-    encoding="UTF-8"
-)
+    etree.ElementTree(root).write(
+        output_file,
+        xml_declaration=True,
+        encoding="UTF-8"
+    )
 
-print(f"✅ Combined schema written to: {OUTPUT_FILE}")
+    print(f"✅ Combined schema written to: {output_file}")
+
+if __name__ == "__main__":
+    main()
