@@ -37,7 +37,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y xmlstarlet
 
       - name: Combine XSD schema into single file
-        run: python scripts/combine_schema.py $INPUT_FILE $OUTPUT_FILE
+        run: python scripts/combine_xsd_schema.py $INPUT_FILE $OUTPUT_FILE
 
       - name: Beautify and normalize XSD with xmlstarlet
         run: |
@@ -58,9 +58,13 @@ jobs:
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          git add $OUTPUT_FILE
-          git commit -m "Auto-update combined schema"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git push
+          git add $OUTPUT_FILE || echo "No changes to add"
+          git status
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-update combined schema"
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+            git push
+          else
+            echo "No changes to commit."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
