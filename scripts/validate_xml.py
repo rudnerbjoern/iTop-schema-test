@@ -3,7 +3,7 @@ import sys
 import lxml.etree as ET
 
 if len(sys.argv) != 3:
-    print("Usage: python validate_datamodel.py <XSD_PATH> <XML_PATH>")
+    print("Usage: python validate_xml.py <XSD_PATH> <XML_PATH>")
     sys.exit(1)
 
 XSD_PATH = sys.argv[1]

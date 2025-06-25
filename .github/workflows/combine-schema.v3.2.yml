@@ -37,7 +37,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y xmlstarlet
 
       - name: Combine XSD schema into single file
-        run: python scripts/combine_xsd_schema.py $INPUT_FILE $OUTPUT_FILE
+        run: python scripts/combine_schema.py $INPUT_FILE $OUTPUT_FILE
 
       - name: Beautify and normalize XSD with xmlstarlet
         run: |
