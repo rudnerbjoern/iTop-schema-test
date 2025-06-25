@@ -57,6 +57,9 @@ jobs:
           xmlstarlet ed -P -L -u "//xs:documentation/text()" -x "normalize-space(.)" $OUTPUT_FILE
           rm -f tmp.xml
 
+      - name: Show diff for debugging
+        run: git diff
+
       - name: Set artifact path
         id: vars
         run: echo "path=$OUTPUT_FILE" >> "$GITHUB_OUTPUT"
