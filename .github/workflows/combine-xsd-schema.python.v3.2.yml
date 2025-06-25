@@ -1,3 +1,11 @@
+#
+# GitHub Actions Workflow: Combine XSD Schema v3.2
+#
+# This workflow runs on every push to the 'main' branch.
+# It combines modular XSD files into a single file, formats the result,
+# uploads it as an artifact, and commits it to the repository.
+#
+
 name: Combine XSD Schema v3.2
 
 on:
@@ -5,10 +13,14 @@ on:
     branches: [main]
 
 jobs:
-  merge:
+  combine-schema:
+    runs-on: ubuntu-latest
     permissions:
       contents: write
-    runs-on: ubuntu-latest
+    env:
+      INPUT_FILE: 3.2/itop_design.xsd
+      OUTPUT_FILE: dist/itop_design_combined.xsd
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,19 +34,22 @@ jobs:
         run: pip install -r scripts/requirements.txt
 
       - name: Combine XSD schema into single file
-        run: python scripts/combine_xsd_schema.py
+        run: python scripts/combine_xsd_schema.py $INPUT_FILE $OUTPUT_FILE
+
+      - name: Beautify XSD with xmllint
+        run: xmllint --format $OUTPUT_FILE --output $OUTPUT_FILE
 
       - name: Upload merged XSD as artifact
         uses: actions/upload-artifact@v4
         with:
           name: combined-xsd
-          path: dist/itop_design_combined.xsd
+          path: $OUTPUT_FILE
 
       - name: Commit combined schema to repository
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          git add dist/itop_design_combined.xsd
+          git add $OUTPUT_FILE
           git commit -m "Auto-update combined schema"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push
