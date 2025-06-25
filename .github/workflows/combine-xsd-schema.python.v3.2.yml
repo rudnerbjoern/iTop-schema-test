@@ -1,4 +1,4 @@
-name: Merge XSDs
+name: Combine XSD Schema v3.2
 
 on:
   pull_request:
@@ -20,8 +20,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Merge XSD files recursively
-        run: python scripts/merge.py
+      - name: Combine XSD schema into single file
+        run: python scripts/combine_xsd_schema.py
 
       - name: Upload merged XSD as artifact
         uses: actions/upload-artifact@v4
