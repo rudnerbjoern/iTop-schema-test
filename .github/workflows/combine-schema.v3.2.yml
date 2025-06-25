@@ -55,40 +55,34 @@ jobs:
         run: |
           xmlstarlet fo --omit-decl $OUTPUT_FILE > tmp.xml && mv tmp.xml $OUTPUT_FILE
           xmlstarlet ed -P -L -u "//xs:documentation/text()" -x "normalize-space(.)" $OUTPUT_FILE
-          rm -f tmp.xml
-
-      - name: Show diff for debugging
-        run: git diff
-
-      - name: Set artifact path
-        id: vars
-        run: echo "path=$OUTPUT_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Upload merged XSD as artifact
         uses: actions/upload-artifact@v4
         with:
           name: combined-xsd
-          path: ${{ steps.vars.outputs.path }}
+          path: ${{ env.OUTPUT_FILE }}
 
       - name: Commit combined schema
         id: commit
         run: |
-          # Already set above – removed duplicate Git config and checkout
           git add $OUTPUT_FILE || echo "No changes to add"
           git status
           if ! git diff --cached --quiet; then
             git commit -m "Auto-update combined schema"
-            git fetch origin auto/schema-update || echo "No remote branch yet"
-            git pull --rebase origin auto/schema-update || echo "Rebase failed or not needed"
+            if git ls-remote --exit-code --heads origin auto/schema-update; then
+              git pull --rebase origin auto/schema-update || echo "Rebase failed or not needed"
+            else
+              echo "Remote branch does not exist yet – skipping rebase."
+            fi
             git push origin auto/schema-update || echo "Push failed"
-            echo "changes_present=true" >> "$GITHUB_OUTPUT"
+            echo "changes_present=true" >> $GITHUB_ENV
           else
             echo "No changes to commit."
-            echo "changes_present=false" >> "$GITHUB_OUTPUT"
+            echo "changes_present=false" >> $GITHUB_ENV
           fi
 
       - name: Create pull request with updated schema
-        if: success() && steps.commit.outputs.changes_present == 'true'
+        if: env.changes_present == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
