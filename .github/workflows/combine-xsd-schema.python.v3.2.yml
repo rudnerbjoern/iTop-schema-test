@@ -1,9 +1,8 @@
 name: Combine XSD Schema v3.2
 
 on:
-  pull_request:
+  push:
     branches: [main]
-    types: [opened, synchronize, reopened]
 
 jobs:
   merge:
@@ -28,14 +27,3 @@ jobs:
         with:
           name: combined-xsd
           path: dist/itop_design_combined.xsd
-
-      - name: Commit combined schema to branch
-        if: github.event.pull_request.merged == true
-        run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-          git add dist/itop_design_combined.xsd
-          git commit -m "Auto-update combined schema after merge"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
