@@ -1,6 +1,8 @@
 from lxml import etree
 import os
 import sys
+import tempfile
+import shutil
 
 XSD_NS = "http://www.w3.org/2001/XMLSchema"
 NSMAP = {"xs": XSD_NS}
@@ -43,7 +45,6 @@ def main():
     master_tree = etree.parse(input_file, parser)
     resolve_includes(master_tree, os.path.dirname(input_file))
 
-    # Füge Kommentar vor das Root-Element ein
     root = master_tree.getroot()
     comment = etree.Comment(
     """
@@ -58,12 +59,17 @@ def main():
     )
     root.addprevious(comment)
 
-    etree.ElementTree(root).write(
-        output_file,
-        xml_declaration=True,
-        encoding="UTF-8"
-    )
+    # Write to a temporary file first
+    with tempfile.NamedTemporaryFile("wb", delete=False) as tmp:
+        temp_path = tmp.name
+        etree.ElementTree(root).write(
+            tmp,
+            pretty_print=True,
+            xml_declaration=True,
+            encoding="UTF-8"
+        )
 
+    shutil.move(temp_path, output_file)
     print(f"✅ Combined schema written to: {output_file}")
 
 if __name__ == "__main__":
