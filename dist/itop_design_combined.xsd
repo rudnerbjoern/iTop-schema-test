@@ -1,6 +1,226 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:include schemaLocation="00-attributeBase.xsd" />
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="3.2" attributeFormDefault="unqualified" elementFormDefault="qualified">
+    <xs:element name="itop_design">
+        <xs:annotation>
+            <xs:documentation source="https://www.itophub.io/wiki/page?id=3_2_0:customization:xml_reference#xml_general_structure">
+                Structural node. No comments are allowed before this tag.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="classes" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Declared classes</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                            <xs:element name="class" type="classNode" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="dictionaries" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:xml_reference#dictionaries">
+                            For adding localizations into the XML.
+                        </xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                            <xs:element name="dictionary" type="dictionaryNode" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="branding" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Appearance of the GUI</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="main_logo" type="logoNode" minOccurs="0" />
+                            <xs:element name="main_logo_compact" type="logoNode" minOccurs="0" />
+                            <xs:element name="login_logo" type="logoNode" minOccurs="0" />
+                            <xs:element name="portal_logo" type="logoNode" minOccurs="0" />
+                            <xs:element name="main_favicon" type="logoNode" minOccurs="0" />
+                            <xs:element name="portal_favicon" type="logoNode" minOccurs="0" />
+                            <xs:element name="login_favicon" type="logoNode" minOccurs="0" />
+                            <xs:element name="themes" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                        <xs:element name="theme" type="themeNode" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="themes_common" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="variables" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                                    <xs:element name="variable" type="alteredIdString" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="imports" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                                    <xs:element name="import">
+                                                        <xs:complexType>
+                                                            <xs:simpleContent>
+                                                                <xs:extension base="xs:anySimpleType">
+                                                                    <xs:attribute name="id" type="xs:string" use="required" />
+                                                                    <xs:attributeGroup ref="alteredNode" />
+                                                                </xs:extension>
+                                                            </xs:simpleContent>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="stylesheets" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                                    <xs:element name="stylesheet" type="alteredIdString" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+            </xs:all>
+            <xs:attribute name="version" type="xs:token" use="required" fixed="3.2" />
+            <xs:attribute name="load">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="lax" />
+                        <xs:enumeration value="strict" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <!-- My Base -->
+    <xs:complexType name="AttributeBase">
+        <xs:sequence>
+            <xs:element name="label" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    <!-- #######################################################################
+         ########################### alterable types ###########################
+         ####################################################################### -->
+    <xs:attributeGroup name="alteredNode">
+        <xs:annotation>
+            <xs:documentation>
+                Metadata attributes for tracking modifications to XML nodes within iTop datamodel delta files.
+                - _delta: Controls how the node should be merged or modified during import.
+                - _rename_from: If present, indicates the node was renamed from another identifier.
+                - _created_in: Marks the module or context where the node was initially created.
+                - _revision_id: Internal revision tracking number.
+                - _altered_in: Identifies the module or source responsible for the change.
+                - _alteration: Describes the type of change (e.g., added, removed, forced).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="_delta" use="optional" default="merge">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="merge" />
+                    <xs:enumeration value="must_exist" />
+                    <xs:enumeration value="if_exists" />
+                    <xs:enumeration value="define" />
+                    <xs:enumeration value="define_if_not_exists" />
+                    <xs:enumeration value="redefine" />
+                    <xs:enumeration value="delete" />
+                    <xs:enumeration value="delete_if_exists" />
+                    <xs:enumeration value="force" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="_rename_from" type="xs:string" use="optional" />
+        <xs:attribute name="_created_in" type="xs:string" use="optional" />
+        <xs:attribute name="_revision_id" type="xs:integer" use="optional" />
+        <xs:attribute name="_altered_in" type="xs:string" use="optional" />
+        <xs:attribute name="_alteration" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="added" />
+                    <xs:enumeration value="needed" />
+                    <xs:enumeration value="replaced" />
+                    <xs:enumeration value="removed" />
+                    <xs:enumeration value="remove_needed" />
+                    <xs:enumeration value="forced" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:attributeGroup>
+    <xs:complexType name="alteredString">
+        <xs:annotation>
+            <xs:documentation>
+                A string value with metadata for tracking modifications in delta XML files.
+                This type extends a plain string (xs:string) with attributes from the alteredNode group,
+                allowing to describe how and when the string was changed, created, renamed, or deleted.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attributeGroup ref="alteredNode" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="alteredIdString">
+        <xs:annotation>
+            <xs:documentation> An altered string value that also carries a required ID attribute. This type extends alteredString by adding an "id" field, which is typically used to uniquely identify the string element. </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="alteredString">
+                <xs:attribute name="id" type="xs:string" use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="alteredFloat">
+        <xs:annotation>
+            <xs:documentation>
+                A float value extended with metadata for tracking changes in delta XML files.
+                This type allows numeric content (xs:float) to carry alteration attributes from the alteredNode group,
+                indicating how the value was introduced, modified, or removed in the datamodel.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:float">
+                <xs:attributeGroup ref="alteredNode" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:simpleType name="zeroOrOneEnumeration">
+        <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="0" />
+            <xs:enumeration value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="eventEnumeration">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="EVENT_DB_COMPUTE_VALUES" />
+            <xs:enumeration value="EVENT_DB_BEFORE_WRITE" />
+            <xs:enumeration value="EVENT_DB_ABOUT_TO_DELETE" />
+            <xs:enumeration value="EVENT_DB_CHECK_TO_WRITE" />
+            <xs:enumeration value="EVENT_DB_CHECK_TO_DELETE" />
+            <xs:enumeration value="EVENT_DB_AFTER_WRITE" />
+            <xs:enumeration value="EVENT_DB_AFTER_DELETE" />
+            <xs:enumeration value="EVENT_DB_LINKS_CHANGED" />
+            <xs:enumeration value="EVENT_DB_ARCHIVE" />
+            <xs:enumeration value="EVENT_DB_UNARCHIVE" />
+            <xs:enumeration value="EVENT_DB_SET_INITIAL_ATTRIBUTES_FLAGS" />
+            <xs:enumeration value="EVENT_DB_SET_ATTRIBUTES_FLAGS" />
+            <xs:enumeration value="EVENT_DB_OBJECT_RELOAD" />
+            <xs:enumeration value="EVENT_ENUM_TRANSITIONS" />
+            <xs:enumeration value="EVENT_DISPLAY_OBJECT_DETAILS" />
+            <xs:enumeration value="EVENT_LOGIN" />
+            <xs:enumeration value="EVENT_ADD_ATTACHMENT_TO_OBJECT" />
+            <xs:enumeration value="EVENT_REMOVE_ATTACHMENT_FROM_OBJECT" />
+            <xs:enumeration value="EVENT_DOWNLOAD_DOCUMENT" />
+        </xs:restriction>
+    </xs:simpleType>
     <!-- my Extension -->
     <xs:complexType name="AttributeExtended">
         <xs:complexContent>
@@ -12,12 +232,9 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-
-
     <!-- #############################################################
          ########################### nodes ###########################
          ############################################################# -->
-
     <xs:complexType name="classNode">
         <xs:all>
             <xs:element name="parent" type="xs:string" minOccurs="0" />
@@ -511,7 +728,6 @@
         <xs:attribute name="id" type="xs:string" use="required" />
         <xs:attributeGroup ref="alteredNode" />
     </xs:complexType>
-
     <xs:complexType name="dictionaryNode">
         <xs:sequence>
             <xs:element name="english_description" type="xs:string" minOccurs="0" />
@@ -527,8 +743,6 @@
         <xs:attribute name="id" type="xs:string" use="required" />
         <xs:attributeGroup ref="alteredNode" />
     </xs:complexType>
-
-
     <!-- ########################### Stimuli ########################### -->
     <xs:complexType name="ObjectStimulus" abstract="true">
         <xs:annotation>
@@ -554,7 +768,6 @@
         <xs:attribute name="id" type="xs:string" use="required" />
         <xs:attributeGroup ref="alteredNode" />
     </xs:complexType>
-
     <xs:complexType name="StimulusUserAction">
         <xs:annotation>
             <xs:documentation>
@@ -566,7 +779,6 @@
             <xs:extension base="ObjectStimulus" />
         </xs:complexContent>
     </xs:complexType>
-
     <xs:complexType name="StimulusInternal">
         <xs:annotation>
             <xs:documentation>
@@ -579,8 +791,6 @@
         </xs:complexContent>
     </xs:complexType>
     <!-- ########################### /Stimuli ########################### -->
-
-
     <xs:complexType name="presentationItems">
         <xs:sequence maxOccurs="unbounded">
             <xs:element name="item">
@@ -596,7 +806,6 @@
         </xs:sequence>
         <xs:attributeGroup ref="alteredNode" />
     </xs:complexType>
-
     <xs:complexType name="flatZlist">
         <xs:all>
             <xs:element name="items">
@@ -617,14 +826,12 @@
         </xs:all>
         <xs:attributeGroup ref="alteredNode" />
     </xs:complexType>
-
     <xs:complexType name="presentationZlist">
         <xs:all>
             <xs:element name="items" type="presentationItems" />
         </xs:all>
         <xs:attributeGroup ref="alteredNode" />
     </xs:complexType>
-
     <xs:complexType name="logoNode">
         <xs:all>
             <xs:element name="fileref">
@@ -635,7 +842,6 @@
         </xs:all>
         <xs:attributeGroup ref="alteredNode" />
     </xs:complexType>
-
     <xs:complexType name="themeNode">
         <xs:all>
             <xs:element name="variables" minOccurs="0">
@@ -667,5 +873,4 @@
         <xs:attribute name="id" type="xs:string" use="required" />
         <xs:attributeGroup ref="alteredNode" />
     </xs:complexType>
-
 </xs:schema>

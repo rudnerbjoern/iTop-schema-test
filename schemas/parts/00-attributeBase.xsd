@@ -1,8 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- My Base -->
     <xs:complexType name="AttributeBase">
         <xs:sequence>
             <xs:element name="label" type="xs:string" />
         </xs:sequence>
     </xs:complexType>
+
+    <!-- #######################################################################
+         ########################### alterable types ###########################
+         ####################################################################### -->
+
+    <xs:attributeGroup name="alteredNode">
+        <xs:annotation>
+            <xs:documentation>
+                Metadata attributes for tracking modifications to XML nodes within iTop datamodel delta files.
+                - _delta: Controls how the node should be merged or modified during import.
+                - _rename_from: If present, indicates the node was renamed from another identifier.
+                - _created_in: Marks the module or context where the node was initially created.
+                - _revision_id: Internal revision tracking number.
+                - _altered_in: Identifies the module or source responsible for the change.
+                - _alteration: Describes the type of change (e.g., added, removed, forced).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="_delta" use="optional" default="merge">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="merge" />
+                    <xs:enumeration value="must_exist" />
+                    <xs:enumeration value="if_exists" />
+                    <xs:enumeration value="define" />
+                    <xs:enumeration value="define_if_not_exists" />
+                    <xs:enumeration value="redefine" />
+                    <xs:enumeration value="delete" />
+                    <xs:enumeration value="delete_if_exists" />
+                    <xs:enumeration value="force" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="_rename_from" type="xs:string" use="optional" />
+        <xs:attribute name="_created_in" type="xs:string" use="optional" />
+        <xs:attribute name="_revision_id" type="xs:integer" use="optional" />
+        <xs:attribute name="_altered_in" type="xs:string" use="optional" />
+        <xs:attribute name="_alteration" use="optional">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="added" />
+                    <xs:enumeration value="needed" />
+                    <xs:enumeration value="replaced" />
+                    <xs:enumeration value="removed" />
+                    <xs:enumeration value="remove_needed" />
+                    <xs:enumeration value="forced" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:attributeGroup>
+
+    <xs:complexType name="alteredString">
+        <xs:annotation>
+            <xs:documentation>
+                A string value with metadata for tracking modifications in delta XML files.
+                This type extends a plain string (xs:string) with attributes from the alteredNode group,
+                allowing to describe how and when the string was changed, created, renamed, or deleted.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attributeGroup ref="alteredNode" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="alteredIdString">
+        <xs:annotation>
+            <xs:documentation> An altered string value that also carries a required ID attribute. This type extends alteredString by adding an "id" field, which is typically used to uniquely identify the string element. </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="alteredString">
+                <xs:attribute name="id" type="xs:string" use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="alteredFloat">
+        <xs:annotation>
+            <xs:documentation>
+                A float value extended with metadata for tracking changes in delta XML files.
+                This type allows numeric content (xs:float) to carry alteration attributes from the alteredNode group,
+                indicating how the value was introduced, modified, or removed in the datamodel.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:float">
+                <xs:attributeGroup ref="alteredNode" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:simpleType name="zeroOrOneEnumeration">
+        <xs:restriction base="xs:unsignedByte">
+            <xs:enumeration value="0" />
+            <xs:enumeration value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="eventEnumeration">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="EVENT_DB_COMPUTE_VALUES" />
+            <xs:enumeration value="EVENT_DB_BEFORE_WRITE" />
+            <xs:enumeration value="EVENT_DB_ABOUT_TO_DELETE" />
+            <xs:enumeration value="EVENT_DB_CHECK_TO_WRITE" />
+            <xs:enumeration value="EVENT_DB_CHECK_TO_DELETE" />
+            <xs:enumeration value="EVENT_DB_AFTER_WRITE" />
+            <xs:enumeration value="EVENT_DB_AFTER_DELETE" />
+            <xs:enumeration value="EVENT_DB_LINKS_CHANGED" />
+            <xs:enumeration value="EVENT_DB_ARCHIVE" />
+            <xs:enumeration value="EVENT_DB_UNARCHIVE" />
+            <xs:enumeration value="EVENT_DB_SET_INITIAL_ATTRIBUTES_FLAGS" />
+            <xs:enumeration value="EVENT_DB_SET_ATTRIBUTES_FLAGS" />
+            <xs:enumeration value="EVENT_DB_OBJECT_RELOAD" />
+            <xs:enumeration value="EVENT_ENUM_TRANSITIONS" />
+            <xs:enumeration value="EVENT_DISPLAY_OBJECT_DETAILS" />
+            <xs:enumeration value="EVENT_LOGIN" />
+            <xs:enumeration value="EVENT_ADD_ATTACHMENT_TO_OBJECT" />
+            <xs:enumeration value="EVENT_REMOVE_ATTACHMENT_FROM_OBJECT" />
+            <xs:enumeration value="EVENT_DOWNLOAD_DOCUMENT" />
+        </xs:restriction>
+    </xs:simpleType>
+
 </xs:schema>
