@@ -19,7 +19,7 @@ jobs:
       contents: write
     env:
       INPUT_FILE: 3.2/itop_design.xsd
-      OUTPUT_FILE: dist/itop_design_combined.xsd
+      OUTPUT_FILE: dist/3.2/itop_design.xsd
 
     steps:
       - name: Checkout repository
