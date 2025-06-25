@@ -51,8 +51,12 @@ jobs:
       - name: Combine XSD schema into single file
         run: python scripts/combine_schema.py $INPUT_FILE $OUTPUT_FILE
 
+      - name: Show file content before formatting
+        run: cat "$OUTPUT_FILE"
+
       - name: Beautify and normalize XSD with xmlstarlet
         run: |
+          echo "Formatting $OUTPUT_FILE ..."
           if xmlstarlet fo --omit-decl "$OUTPUT_FILE" > tmp.xml; then
             mv tmp.xml "$OUTPUT_FILE"
             xmlstarlet ed -P -L -u "//xs:documentation/text()" -x "normalize-space(.)" "$OUTPUT_FILE"
@@ -60,6 +64,9 @@ jobs:
             echo "xmlstarlet formatting failed"
             exit 1
           fi
+
+      - name: Show file content after formatting
+        run: cat "$OUTPUT_FILE"
 
       - name: Upload merged XSD as artifact
         uses: actions/upload-artifact@v4
