@@ -21,10 +21,21 @@ jobs:
         run: pip install -r scripts/requirements.txt
 
       - name: Merge XSD files recursively
-        run: python scripts/merge_xsds.py
+        run: python scripts/merge.py
 
       - name: Upload merged XSD as artifact
         uses: actions/upload-artifact@v4
         with:
           name: combined-xsd
           path: dist/itop_design_combined.xsd
+
+      - name: Commit combined schema to branch
+        if: github.event.pull_request.merged == true
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add dist/itop_design_combined.xsd
+          git commit -m "Auto-update combined schema after merge"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
