@@ -34,6 +34,7 @@ jobs:
           git config --global user.email "action@github.com"
           git add dist/itop_design_combined.xsd
           git commit -m "Auto-update combined schema"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
