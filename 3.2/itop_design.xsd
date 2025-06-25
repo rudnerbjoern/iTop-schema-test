@@ -737,6 +737,7 @@
                                                         <xs:attributeGroup ref="alteredNode" />
                                                     </xs:complexType>
                                                 </xs:element>
+
                                             </xs:sequence>
                                             <xs:attributeGroup ref="alteredNode" />
                                         </xs:complexType>
