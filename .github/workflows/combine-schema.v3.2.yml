@@ -2,8 +2,8 @@
 # GitHub Actions Workflow: Combine XSD Schema v3.2
 #
 # This workflow runs on every push to the 'main' branch.
-# It combines modular XSD files into a single file, formats the result,
-# uploads it as an artifact, and commits it to the repository.
+# It combines modular XSD files into a single file, formats the result
+# using xmlstarlet, uploads it as an artifact, and commits it to the repository.
 #
 
 name: Combine XSD Schema v3.2
@@ -33,14 +33,16 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r scripts/requirements.txt
 
-      - name: Install xmllint
-        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+      - name: Install xmlstarlet
+        run: sudo apt-get update && sudo apt-get install -y xmlstarlet
 
       - name: Combine XSD schema into single file
         run: python scripts/combine_xsd_schema.py $INPUT_FILE $OUTPUT_FILE
 
-      - name: Beautify XSD with xmllint
-        run: xmllint --format $OUTPUT_FILE --output $OUTPUT_FILE
+      - name: Beautify and normalize XSD with xmlstarlet
+        run: |
+          xmlstarlet fo --omit-decl $OUTPUT_FILE > tmp.xml && mv tmp.xml $OUTPUT_FILE
+          xmlstarlet ed -P -L -u "//xs:documentation/text()" -x "normalize-space(.)" $OUTPUT_FILE
 
       - name: Upload merged XSD as artifact
         uses: actions/upload-artifact@v4
