@@ -30,8 +30,11 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: pip install -r scripts/requirements.txt
+
+      - name: Install xmllint
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
 
       - name: Combine XSD schema into single file
         run: python scripts/combine_xsd_schema.py $INPUT_FILE $OUTPUT_FILE
