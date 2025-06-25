@@ -1,0 +1,31 @@
+name: Merge XSDs
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install lxml
+
+      - name: Merge XSD files
+        run: |
+          python scripts/merge_xsds.py
+
+      - name: Upload merged XSD as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: combined-xsd
+          path: dist/itop_design_combined.xsd
