@@ -18,11 +18,10 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install lxml
+        run: pip install -r scripts/requirements.txt
 
-      - name: Merge XSD files
-        run: |
-          python scripts/merge_xsds.py
+      - name: Merge XSD files recursively
+        run: python scripts/merge_xsds.py
 
       - name: Upload merged XSD as artifact
         uses: actions/upload-artifact@v4
