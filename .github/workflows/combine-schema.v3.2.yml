@@ -19,7 +19,7 @@ jobs:
       contents: write
     env:
       INPUT_FILE: 3.2/itop_design.xsd
-      OUTPUT_FILE: dist/itop_design_combined.xsd
+      OUTPUT_FILE: dist/3.2/itop_design.xsd
 
     steps:
       - name: Checkout repository
@@ -44,11 +44,15 @@ jobs:
           xmlstarlet fo --omit-decl $OUTPUT_FILE > tmp.xml && mv tmp.xml $OUTPUT_FILE
           xmlstarlet ed -P -L -u "//xs:documentation/text()" -x "normalize-space(.)" $OUTPUT_FILE
 
+      - name: Set artifact path
+        id: vars
+        run: echo "path=$OUTPUT_FILE" >> $GITHUB_OUTPUT
+
       - name: Upload merged XSD as artifact
         uses: actions/upload-artifact@v4
         with:
           name: combined-xsd
-          path: $OUTPUT_FILE
+          path: ${{ steps.vars.outputs.path }}
 
       - name: Commit combined schema to repository
         run: |
