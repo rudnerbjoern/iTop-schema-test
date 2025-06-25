@@ -4,6 +4,7 @@
         <xs:annotation>
             <xs:documentation source="https://www.itophub.io/wiki/page?id=3_2_0:customization:xml_reference#xml_general_structure">
                 Structural node. No comments are allowed before this tag.
+                Test
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
@@ -737,7 +738,6 @@
                                                         <xs:attributeGroup ref="alteredNode" />
                                                     </xs:complexType>
                                                 </xs:element>
-
                                             </xs:sequence>
                                             <xs:attributeGroup ref="alteredNode" />
                                         </xs:complexType>
