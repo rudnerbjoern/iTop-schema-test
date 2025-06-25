@@ -27,3 +27,13 @@ jobs:
         with:
           name: combined-xsd
           path: dist/itop_design_combined.xsd
+
+      - name: Commit combined schema to repository
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add dist/itop_design_combined.xsd
+          git commit -m "Auto-update combined schema"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
