@@ -22,35 +22,25 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Create new branch
-        run: |
-          BRANCH="auto/update-schema-$(date +%s)"
-          echo "BRANCH_NAME=$BRANCH" >> $GITHUB_ENV
-          git checkout -b $BRANCH
-
       - name: Run script to copy schema
         run: |
           mkdir -p dist/3.2/
           cp 3.2/itop_design.xsd dist/3.2/
-
-      - name: Commit changes
-        run: |
-          git add dist/3.2/itop_design.xsd
-          git commit -m "Auto: Update itop_design.xsd"
-          git push origin $BRANCH_NAME
 
       - name: Create pull request
         id: create-pull-request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ env.BRANCH_NAME }}
+          commit-message: "Auto: Update itop_design.xsd"
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          branch: auto/update-schema
           base: main
           title: "Auto: Update itop_design.xsd"
           body: "This PR was automatically created by a GitHub Action."
-          commit-message: "Auto: Update itop_design.xsd"
+          labels: auto-update
           draft: false
-          labels: auto-merge
 
       - name: Enable automerge
         uses: "peter-evans/enable-pull-request-automerge@v3"
@@ -58,14 +48,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           pull-request-number: ${{ steps.create-pull-request.outputs.pull-request-number }}
           merge-method: squash
-
-      - name: Delete local branch
-        if: always()
-        run: |
-          git checkout main
-          git branch -D ${{ env.BRANCH_NAME }}
-
-      - name: Delete remote branch
-        if: always()
-        run: |
-          git push origin --delete ${{ env.BRANCH_NAME }}
