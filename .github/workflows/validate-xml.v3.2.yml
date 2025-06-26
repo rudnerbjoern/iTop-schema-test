@@ -9,8 +9,8 @@ jobs:
   validate-xml:
     runs-on: ubuntu-latest
     env:
-      XSD_PATH: 3.2/itop_design.xsd
-      XML_PATH: test/datamodel.must-validate.xml
+      XSD_PATH: schema/3.2/itop_design.xsd
+      XML_PATH: test/3.2/datamodel.must-validate.xml
 
     steps:
       - name: Checkout repository
@@ -22,13 +22,13 @@ jobs:
         id: determine
         run: |
           git fetch origin main
-          CHANGED=$(git diff --name-only origin/main...HEAD | grep '^3.2/' || true)
+          CHANGED=$(git diff --name-only origin/main...HEAD | grep '^schema/3.2/' || true)
           if [ -z "$CHANGED" ]; then
             echo "skip=true" >> $GITHUB_OUTPUT
-            echo "No relevant changes in /3.2 detected. Skipping validation."
+            echo "No relevant changes in /schema/3.2 detected. Skipping validation."
           else
             echo "skip=false" >> $GITHUB_OUTPUT
-            echo "Relevant changes detected in /3.2. Proceeding with validation."
+            echo "Relevant changes detected in /schema/3.2. Proceeding with validation."
           fi
 
       - name: Set up Python
@@ -56,7 +56,7 @@ jobs:
 
       - name: Skip validation (no relevant changes)
         if: steps.determine.outputs.skip == 'true'
-        run: echo "✅ No relevant changes in /3.2. Validation skipped."
+        run: echo "✅ No relevant changes in /schema/3.2. Validation skipped."
 
       - name: Add workflow summary
         run: |

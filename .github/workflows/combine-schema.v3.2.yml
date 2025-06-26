@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - '3.2/**'
+      - 'schema/common/**'
+      - 'schema/3.2/**'
       - 'scripts/**'
       - '.github/workflows/combine-schema.v3.2.yml'
 
@@ -21,7 +22,7 @@ jobs:
       contents: write
       pull-requests: write
     env:
-      INPUT_FILE: 3.2/itop_design.xsd
+      INPUT_FILE: schema/3.2/itop_design.xsd
       OUTPUT_FILE: dist/3.2/itop_design.xsd
 
     steps:

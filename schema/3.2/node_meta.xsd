@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="../common/types.xsd" />
+
+    <xs:complexType name="metaNode">
+        <xs:all>
+            <xs:element name="classes" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:element name="class" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="presentation" minOccurs="0">
+                <xs:complexType>
+                    <xs:choice maxOccurs="unbounded">
+                        <xs:any processContents="lax" />
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="attribute_properties_definition" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence minOccurs="0">
+                        <xs:element name="properties">
+                            <xs:complexType>
+                                <xs:sequence maxOccurs="unbounded">
+                                    <xs:element name="property">
+                                        <xs:complexType>
+                                            <xs:all>
+                                                <xs:element name="php_param" type="xs:string" minOccurs="0" />
+                                                <xs:element name="mandatory" type="xs:boolean" minOccurs="0" />
+                                                <xs:element name="type" type="xs:string" minOccurs="0" />
+                                                <xs:element name="default" type="xs:string" minOccurs="0" />
+                                            </xs:all>
+                                            <xs:attribute name="id" type="xs:string" use="required" />
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attributeGroup ref="alteredNode" />
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+
+</xs:schema>

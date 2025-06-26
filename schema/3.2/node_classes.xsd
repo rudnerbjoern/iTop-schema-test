@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:include schemaLocation="00-attributeBase.xsd" />
-    <!-- my Extension -->
-    <xs:complexType name="AttributeExtended">
-        <xs:complexContent>
-            <!-- reference the base -->
-            <xs:extension base="AttributeBase">
-                <xs:sequence>
-                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
-                </xs:sequence>
-            </xs:extension>
-        </xs:complexContent>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="../common/types.xsd" />
+
+
+    <xs:complexType name="classesNode">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="class" type="classNode" />
+        </xs:sequence>
     </xs:complexType>
-
-
-    <!-- #############################################################
-         ########################### nodes ###########################
-         ############################################################# -->
 
     <xs:complexType name="classNode">
         <xs:all>
@@ -410,7 +402,9 @@
                                     </xs:element>
                                     <xs:element name="arguments" minOccurs="0">
                                         <xs:annotation>
-                                            <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:form_prefill"> Use definition from https://www.itophub.io/wiki/page?id=latest:customization:form_prefill </xs:documentation>
+                                            <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:form_prefill">
+                                                    Use definition from https://www.itophub.io/wiki/page?id=latest:customization:form_prefill
+                                                </xs:documentation>
                                         </xs:annotation>
                                         <xs:complexType>
                                             <xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -512,22 +506,50 @@
         <xs:attributeGroup ref="alteredNode" />
     </xs:complexType>
 
-    <xs:complexType name="dictionaryNode">
-        <xs:sequence>
-            <xs:element name="english_description" type="xs:string" minOccurs="0" />
-            <xs:element name="localized_description" type="xs:string" minOccurs="0" />
-            <xs:element name="entries">
-                <xs:complexType>
-                    <xs:sequence maxOccurs="unbounded">
-                        <xs:element name="entry" type="alteredIdString" />
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-        </xs:sequence>
-        <xs:attribute name="id" type="xs:string" use="required" />
+
+    <xs:complexType name="presentationZlist">
+        <xs:all>
+            <xs:element name="items" type="presentationItems" />
+        </xs:all>
         <xs:attributeGroup ref="alteredNode" />
     </xs:complexType>
 
+    <xs:complexType name="presentationItems">
+        <xs:sequence maxOccurs="unbounded">
+            <xs:element name="item">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="rank" minOccurs="0" type="alteredFloat" />
+                        <xs:element name="items" minOccurs="0" type="presentationItems" />
+                    </xs:sequence>
+                    <xs:attribute name="id" type="xs:string" use="required" />
+                    <xs:attributeGroup ref="alteredNode" />
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attributeGroup ref="alteredNode" />
+    </xs:complexType>
+
+    <xs:complexType name="flatZlist">
+        <xs:all>
+            <xs:element name="items">
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:element name="item">
+                            <xs:complexType>
+                                <xs:sequence minOccurs="0">
+                                    <xs:element name="rank" type="alteredFloat" />
+                                </xs:sequence>
+                                <xs:attribute name="id" type="xs:string" use="required" />
+                                <xs:attributeGroup ref="alteredNode" />
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+        <xs:attributeGroup ref="alteredNode" />
+    </xs:complexType>
 
     <!-- ########################### Stimuli ########################### -->
     <xs:complexType name="ObjectStimulus" abstract="true">
@@ -579,93 +601,5 @@
         </xs:complexContent>
     </xs:complexType>
     <!-- ########################### /Stimuli ########################### -->
-
-
-    <xs:complexType name="presentationItems">
-        <xs:sequence maxOccurs="unbounded">
-            <xs:element name="item">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="rank" minOccurs="0" type="alteredFloat" />
-                        <xs:element name="items" minOccurs="0" type="presentationItems" />
-                    </xs:sequence>
-                    <xs:attribute name="id" type="xs:string" use="required" />
-                    <xs:attributeGroup ref="alteredNode" />
-                </xs:complexType>
-            </xs:element>
-        </xs:sequence>
-        <xs:attributeGroup ref="alteredNode" />
-    </xs:complexType>
-
-    <xs:complexType name="flatZlist">
-        <xs:all>
-            <xs:element name="items">
-                <xs:complexType>
-                    <xs:sequence maxOccurs="unbounded">
-                        <xs:element name="item">
-                            <xs:complexType>
-                                <xs:sequence minOccurs="0">
-                                    <xs:element name="rank" type="alteredFloat" />
-                                </xs:sequence>
-                                <xs:attribute name="id" type="xs:string" use="required" />
-                                <xs:attributeGroup ref="alteredNode" />
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-        </xs:all>
-        <xs:attributeGroup ref="alteredNode" />
-    </xs:complexType>
-
-    <xs:complexType name="presentationZlist">
-        <xs:all>
-            <xs:element name="items" type="presentationItems" />
-        </xs:all>
-        <xs:attributeGroup ref="alteredNode" />
-    </xs:complexType>
-
-    <xs:complexType name="logoNode">
-        <xs:all>
-            <xs:element name="fileref">
-                <xs:complexType>
-                    <xs:attribute name="ref" type="xs:string" use="required" />
-                </xs:complexType>
-            </xs:element>
-        </xs:all>
-        <xs:attributeGroup ref="alteredNode" />
-    </xs:complexType>
-
-    <xs:complexType name="themeNode">
-        <xs:all>
-            <xs:element name="variables" minOccurs="0">
-                <xs:complexType>
-                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
-                        <xs:element name="variable" type="alteredIdString" />
-                    </xs:sequence>
-                    <xs:attributeGroup ref="alteredNode" />
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="imports" minOccurs="0">
-                <xs:complexType>
-                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
-                        <xs:element name="import" />
-                    </xs:sequence>
-                    <xs:attributeGroup ref="alteredNode" />
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="stylesheets" minOccurs="0">
-                <xs:complexType>
-                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
-                        <xs:element name="stylesheet" type="alteredIdString" />
-                    </xs:sequence>
-                    <xs:attributeGroup ref="alteredNode" />
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="precompiled_stylesheet" type="xs:string" minOccurs="0" />
-        </xs:all>
-        <xs:attribute name="id" type="xs:string" use="required" />
-        <xs:attributeGroup ref="alteredNode" />
-    </xs:complexType>
 
 </xs:schema>
