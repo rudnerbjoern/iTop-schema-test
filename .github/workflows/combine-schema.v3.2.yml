@@ -35,13 +35,26 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Python dependencies
-        run: pip install -r scripts/requirements.txt
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y xmlstarlet
+          pip install -r scripts/requirements.txt
 
-      - name: Combine XSD schema into single file
-        run: python scripts/combine_schema.py $INPUT_FILE $OUTPUT_FILE
+      - name: Combine and format XSD schema
+        run: |
+          set -e
+          echo "Combining input schema: $INPUT_FILE"
+          python scripts/combine_schema.py $INPUT_FILE $OUTPUT_FILE
 
-      - name: Show file content before formatting
+          echo "Formatting schema file with xmlstarlet..."
+          xmlstarlet fo "$OUTPUT_FILE" > "${OUTPUT_FILE}.formatted"
+          mv "${OUTPUT_FILE}.formatted" "$OUTPUT_FILE"
+
+          echo "Normalizing <xs:documentation> contents..."
+          xmlstarlet ed -N xs="http://www.w3.org/2001/XMLSchema" -L \
+            -u '//xs:documentation' -x 'normalize-space(.)' "$OUTPUT_FILE"
+
+      - name: Show file content before pull request
         run: |
           echo "Head:"
           head -n 20 "$OUTPUT_FILE"
@@ -70,3 +83,20 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           pull-request-number: ${{ steps.create-pull-request.outputs.pull-request-number }}
           merge-method: squash
+
+      - name: Delete branch after merge
+        if: ${{ steps.create-pull-request.outputs.pull-request-operation == 'updated' || steps.create-pull-request.outputs.pull-request-operation == 'created' }}
+        run: |
+          echo "Waiting for merge..."
+          for i in {1..30}; do
+            PR_STATE=$(gh pr view ${{ steps.create-pull-request.outputs.pull-request-url }} --json merged --jq .merged)
+            if [ "$PR_STATE" = "true" ]; then
+              echo "PR merged, deleting branch..."
+              git push origin --delete auto/update-schema
+              break
+            fi
+            echo "Not merged yet, retrying in 10s... ($i/30)"
+            sleep 10
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
