@@ -102,9 +102,9 @@ jobs:
         run: |
           echo "Waiting for all status checks to pass..."
           for i in {1..30}; do
-            STATE=$(gh pr view ${{ steps.create-pull-request.outputs.pull-request-url }} --json statusCheckRollup --jq '.statusCheckRollup[].state' || echo "null")
-            echo "statusCheckRollup = $STATE"
-            if [[ "$STATE" == "SUCCESS" ]]; then
+            STATES=$(gh pr view ${{ steps.create-pull-request.outputs.pull-request-url }} --json statusCheckRollup --jq '[.statusCheckRollup[].state]' || echo "[]")
+            echo "statusCheckRollup states = $STATES"
+            if echo "$STATES" | jq -e 'all(. == "SUCCESS")' > /dev/null; then
               echo "All checks passed."
               break
             fi
