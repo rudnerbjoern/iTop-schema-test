@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="../common/types.xsd" />
+
+    <xs:complexType name="dependenciesType">
+        <xs:annotation>
+            <xs:documentation>
+                Defines a list of attribute dependencies within the iTop datamodel.
+                Each dependency refers to an attribute by its 'id'.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="attribute">
+                <xs:complexType>
+                    <xs:attribute name="id" type="xs:string" use="required" />
+                    <xs:attributeGroup ref="alteredNode" />
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="editModeEnumeration">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="none" />
+            <xs:enumeration value="add_only" />
+            <xs:enumeration value="add_remove" />
+            <xs:enumeration value="actions" />
+            <xs:enumeration value="in_place" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="editWhenEnumeration">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="always" />
+            <xs:enumeration value="on_host_edition" />
+            <xs:enumeration value="on_host_display" />
+            <xs:enumeration value="never" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="trackingLevelLinkedSetEnumeration">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="none" />
+            <xs:enumeration value="list" />
+            <xs:enumeration value="details" />
+            <xs:enumeration value="all" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="AttributeDefinition">
+        <xs:annotation>
+            <xs:documentation>
+                Base type for all attribute definitions in the iTop datamodel.
+                Includes a required 'id' and alteration metadata from the alteredNode group.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attributeGroup ref="alteredNode" />
+    </xs:complexType>
+
+    <xs:complexType name="AttributeBlob">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeBoolean">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeCaseLog">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeCustomFields">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="handler_class" type="xs:string" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeDashboard">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="is_user_editable" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="definition_file" type="xs:string" minOccurs="0" />
+                    <xs:element name="definition" minOccurs="0">
+                        <xs:complexType>
+                            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                <xs:any processContents="lax" />
+                            </xs:choice>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeDate">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeDateTime">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeDeadline">
+        <xs:complexContent>
+            <xs:extension base="AttributeDateTime" />
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeDecimal">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="digits" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="decimals" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeDuration">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeEmailAddress">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="validation_pattern" type="xs:string" minOccurs="0" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeEncryptedPassword">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="validation_pattern" type="xs:string" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeEncryptedString">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="validation_pattern" type="xs:string" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeEnum">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sort_type" type="enumSortEnumeration" minOccurs="0" />
+                    <xs:element name="values" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence maxOccurs="unbounded">
+                                <xs:element name="value">
+                                    <xs:complexType>
+                                        <xs:all>
+                                            <xs:element name="code" type="xs:string" minOccurs="0" />
+                                            <xs:element name="rank" type="xs:string" minOccurs="0" />
+                                            <xs:element name="style" type="styleType" minOccurs="0" />
+                                        </xs:all>
+                                        <xs:attribute name="id" type="xs:string" use="required" />
+                                        <xs:attributeGroup ref="alteredNode" />
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                            <xs:attributeGroup ref="alteredNode" />
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="default_style" type="styleType" minOccurs="0" />
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="display_style" type="displayStyleEnumeration" minOccurs="0" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeEnumSet">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="values" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                                <xs:element name="value">
+                                    <xs:complexType>
+                                        <xs:all>
+                                            <xs:element name="code" type="xs:string" minOccurs="0" />
+                                        </xs:all>
+                                        <xs:attribute name="id" type="xs:string" use="required" />
+                                        <xs:attributeGroup ref="alteredNode" />
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="max_items" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeExternalField">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="extkey_attcode" type="xs:string" minOccurs="0" />
+                    <xs:element name="target_attcode" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeExternalKey">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="on_target_delete" type="onTargetDeleteEnumeration" minOccurs="0" />
+                    <xs:element name="target_class" type="xs:string" minOccurs="0" />
+                    <xs:element name="filter" type="alteredString" minOccurs="0" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                    <xs:element name="max_combo_length" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="min_autocomplete_chars" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="allow_target_creation" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="display_style" type="displayStyleEnumeration" minOccurs="0" />
+                    <xs:element name="create_temporary_object" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="jointype" minOccurs="0">
+                        <xs:complexType />
+                    </xs:element>
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeHierarchicalKey">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="on_target_delete" type="onTargetDeleteEnumeration" minOccurs="0" />
+                    <xs:element name="filter" type="alteredString" minOccurs="0" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                    <xs:element name="max_combo_length" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="min_autocomplete_chars" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="allow_target_creation" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeHTML">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="width" type="xs:string" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>This tag has no effect.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="height" type="xs:string" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeImage">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="display_max_width" type="xs:nonNegativeInteger" minOccurs="0" default="128" />
+                    <xs:element name="display_max_height" type="xs:nonNegativeInteger" minOccurs="0" default="128" />
+                    <xs:element name="storage_max_width" type="xs:nonNegativeInteger" minOccurs="0" default="256" />
+                    <xs:element name="storage_max_height" type="xs:nonNegativeInteger" minOccurs="0" default="256" />
+                    <xs:element name="default_image" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeInteger">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <!-- should be of type="xs:integer" but this will cause errors -->
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeIPAddress">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeLinkedSet">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="linked_class" type="xs:string" minOccurs="0" />
+                    <xs:element name="filter" type="alteredString" minOccurs="0" />
+                    <xs:element name="ext_key_to_me" type="xs:string" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelLinkedSetEnumeration" minOccurs="0" />
+                    <xs:element name="edit_mode" type="editModeEnumeration" minOccurs="0" default="actions" />
+                    <xs:element name="edit_when" type="editWhenEnumeration" minOccurs="0" />
+                    <xs:element name="duplicates" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="count_min" type="xs:nonNegativeInteger" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>unused yet</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="count_max" type="xs:nonNegativeInteger" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>unused yet</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="with_php_constraint" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="with_php_computation" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeLinkedSetIndirect">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="linked_class" type="xs:string" minOccurs="0" />
+                    <xs:element name="ext_key_to_me" type="xs:string" minOccurs="0" />
+                    <xs:element name="ext_key_to_remote" type="xs:string" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelLinkedSetEnumeration" minOccurs="0" />
+                    <xs:element name="edit_when" type="editWhenEnumeration" minOccurs="0" />
+                    <xs:element name="duplicates" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="count_min" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="count_max" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="display_style" minOccurs="0" default="tab">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="tab" />
+                                <xs:enumeration value="property" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="with_php_constraint" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="with_php_computation" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="filter" type="alteredString" minOccurs="0" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeMetaEnum">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="sort_type" type="enumSortEnumeration" minOccurs="0" />
+                    <xs:element name="values" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                                <xs:element name="value">
+                                    <xs:complexType>
+                                        <xs:all>
+                                            <xs:element name="code" type="xs:string" minOccurs="0" />
+                                            <xs:element name="rank" type="xs:float" minOccurs="0" />
+                                            <xs:element name="style" type="styleType" minOccurs="0" />
+                                        </xs:all>
+                                        <xs:attribute name="id" type="xs:string" use="required" />
+                                        <xs:attributeGroup ref="alteredNode" />
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_style" type="styleType" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="mappings" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="mapping">
+                                    <xs:complexType>
+                                        <xs:all>
+                                            <xs:element name="attcode" type="alteredString" minOccurs="0" />
+                                            <xs:element name="metavalues" minOccurs="0">
+                                                <xs:complexType>
+                                                    <xs:sequence maxOccurs="unbounded">
+                                                        <xs:element name="metavalue">
+                                                            <xs:complexType>
+                                                                <xs:all>
+                                                                    <xs:element name="values" minOccurs="0">
+                                                                        <xs:complexType>
+                                                                            <xs:sequence maxOccurs="unbounded">
+                                                                                <xs:element name="value">
+                                                                                    <xs:complexType>
+                                                                                        <xs:attribute name="id" type="xs:string" use="required" />
+                                                                                        <xs:attributeGroup ref="alteredNode" />
+                                                                                    </xs:complexType>
+                                                                                </xs:element>
+                                                                            </xs:sequence>
+                                                                            <xs:attributeGroup ref="alteredNode" />
+                                                                        </xs:complexType>
+                                                                    </xs:element>
+                                                                </xs:all>
+                                                                <xs:attribute name="id" type="xs:string" use="required" />
+                                                                <xs:attributeGroup ref="alteredNode" />
+                                                            </xs:complexType>
+                                                        </xs:element>
+                                                    </xs:sequence>
+                                                    <xs:attributeGroup ref="alteredNode" />
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:all>
+                                        <xs:attribute name="id" type="xs:string" use="required" />
+                                        <xs:attributeGroup ref="alteredNode" />
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                            <xs:attributeGroup ref="alteredNode" />
+                        </xs:complexType>
+                    </xs:element>
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeObjectKey">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="class_attcode" type="xs:string" minOccurs="0" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeOneWayPassword">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="validation_pattern" type="xs:string" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributePassword">
+        <xs:complexContent>
+            <xs:extension base="AttributeString" />
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributePercentage">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributePhoneNumber">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="validation_pattern" type="xs:string" minOccurs="0" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeRedundancySettings">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="relation_code" type="xs:string" minOccurs="0" />
+                    <xs:element name="from_class" type="xs:string" minOccurs="0" />
+                    <xs:element name="neighbour_id" type="xs:string" minOccurs="0" />
+                    <xs:element name="enabled" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="enabled_mode" minOccurs="0">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="fixed" />
+                                <xs:enumeration value="user" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="min_up" type="xs:unsignedByte" minOccurs="0" />
+                    <xs:element name="min_up_type" minOccurs="0">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="count" />
+                                <xs:enumeration value="percent" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="min_up_mode" minOccurs="0">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="fixed" />
+                                <xs:enumeration value="user" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeStopWatch">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="states" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence maxOccurs="unbounded">
+                                <xs:element name="state">
+                                    <xs:complexType>
+                                        <xs:attribute name="id" type="xs:string" use="required" />
+                                        <xs:attributeGroup ref="alteredNode" />
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="goal" type="xs:string" minOccurs="0" default="DefaultMetricComputer" />
+                    <xs:element name="working_time" type="xs:string" minOccurs="0" default="DefaultWorkingTimeComputer" />
+                    <xs:element name="thresholds" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                <xs:element name="threshold">
+                                    <xs:complexType>
+                                        <xs:all>
+                                            <xs:element name="actions" minOccurs="0">
+                                                <xs:complexType>
+                                                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                                        <xs:element name="action">
+                                                            <xs:complexType>
+                                                                <xs:sequence>
+                                                                    <xs:element name="verb" type="xs:string" minOccurs="0" />
+                                                                    <xs:element name="params" minOccurs="0">
+                                                                        <xs:complexType>
+                                                                            <xs:sequence maxOccurs="unbounded">
+                                                                                <xs:element name="param" />
+                                                                            </xs:sequence>
+                                                                        </xs:complexType>
+                                                                    </xs:element>
+                                                                </xs:sequence>
+                                                            </xs:complexType>
+                                                        </xs:element>
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="highlight" minOccurs="0">
+                                                <xs:complexType>
+                                                    <xs:all>
+                                                        <xs:element name="code" type="xs:string" minOccurs="0" />
+                                                        <xs:element name="persistent" type="xs:boolean" minOccurs="0" />
+                                                    </xs:all>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:all>
+                                        <xs:attribute name="id" type="xs:unsignedByte" use="required" />
+                                        <xs:attributeGroup ref="alteredNode" />
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeString">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="validation_pattern" type="xs:string" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <!-- ########################### AttributeApplicationLanguage ########################### -->
+    <!--
+    <xs:complexType name="AttributeApplicationLanguage">
+        <xs:complexContent>
+            <xs:extension base="AttributeString">
+                <xs:all>
+                    <xs:element name="allowed_values" type="xs:string" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    -->
+    <!-- ########################### /AttributeApplicationLanguage ########################### -->
+
+    <xs:complexType name="AttributeSubItem">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="target_attcode" type="xs:string" minOccurs="0" />
+                    <xs:element name="item_code" minOccurs="0">
+                        <xs:simpleType>
+                            <xs:union>
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="timespent" />
+                                        <xs:enumeration value="started" />
+                                        <xs:enumeration value="laststart" />
+                                        <xs:enumeration value="stopped" />
+                                    </xs:restriction>
+                                </xs:simpleType>
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:pattern value="(\d+)_deadline" />
+                                        <xs:pattern value="(\d+)_passed" />
+                                        <xs:pattern value="(\d+)_triggered" />
+                                        <xs:pattern value="(\d+)_overrun" />
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:union>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeTagSet">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="max_items" type="xs:unsignedByte" minOccurs="0" default="12" />
+                    <xs:element name="tag_code_max_len" type="xs:unsignedByte" minOccurs="0" default="20" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeText">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="width" type="xs:string" minOccurs="0" />
+                    <xs:element name="height" type="xs:string" minOccurs="0" />
+                    <xs:element name="format" minOccurs="0">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="text" />
+                                <xs:enumeration value="html" />
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeLongText">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="width" type="xs:string" minOccurs="0" />
+                    <xs:element name="height" type="xs:string" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AttributeURL">
+        <xs:complexContent>
+            <xs:extension base="AttributeDefinition">
+                <xs:all>
+                    <xs:element name="sql" type="xs:string" minOccurs="0" />
+                    <xs:element name="default_value" type="xs:string" minOccurs="0" />
+                    <xs:element name="is_null_allowed" type="xs:boolean" minOccurs="0" />
+                    <xs:element name="target" type="xs:string" minOccurs="0" />
+                    <xs:element name="validation_pattern" type="xs:string" minOccurs="0" />
+                    <xs:element name="tracking_level" type="trackingLevelEnumeration" minOccurs="0" />
+                    <xs:element name="always_load_in_tables" type="xs:boolean" minOccurs="0" default="false" />
+                    <xs:element name="dependencies" type="dependenciesType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

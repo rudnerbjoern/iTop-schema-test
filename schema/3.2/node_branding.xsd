@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="../common/types.xsd" />
+
+    <xs:complexType name="brandingNode">
+        <xs:all>
+            <xs:element name="main_logo" type="logoNode" minOccurs="0" />
+            <xs:element name="main_logo_compact" type="logoNode" minOccurs="0" />
+            <xs:element name="login_logo" type="logoNode" minOccurs="0" />
+            <xs:element name="portal_logo" type="logoNode" minOccurs="0" />
+            <xs:element name="main_favicon" type="logoNode" minOccurs="0" />
+            <xs:element name="portal_favicon" type="logoNode" minOccurs="0" />
+            <xs:element name="login_favicon" type="logoNode" minOccurs="0" />
+            <xs:element name="themes" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="theme" type="themeNode" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="themes_common" minOccurs="0">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="variables" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                    <xs:element name="variable" type="alteredIdString" />
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="imports" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                    <xs:element name="import">
+                                        <xs:complexType>
+                                            <xs:simpleContent>
+                                                <xs:extension base="xs:anySimpleType">
+                                                    <xs:attribute name="id" type="xs:string" use="required" />
+                                                    <xs:attributeGroup ref="alteredNode" />
+                                                </xs:extension>
+                                            </xs:simpleContent>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="stylesheets" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                    <xs:element name="stylesheet" type="alteredIdString" />
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="logoNode">
+        <xs:all>
+            <xs:element name="fileref">
+                <xs:complexType>
+                    <xs:attribute name="ref" type="xs:string" use="required" />
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+        <xs:attributeGroup ref="alteredNode" />
+    </xs:complexType>
+
+    <xs:complexType name="themeNode">
+        <xs:all>
+            <xs:element name="variables" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="variable" type="alteredIdString" />
+                    </xs:sequence>
+                    <xs:attributeGroup ref="alteredNode" />
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="imports" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="import" />
+                    </xs:sequence>
+                    <xs:attributeGroup ref="alteredNode" />
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="stylesheets" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="stylesheet" type="alteredIdString" />
+                    </xs:sequence>
+                    <xs:attributeGroup ref="alteredNode" />
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="precompiled_stylesheet" type="xs:string" minOccurs="0" />
+        </xs:all>
+        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attributeGroup ref="alteredNode" />
+    </xs:complexType>
+
+</xs:schema>
