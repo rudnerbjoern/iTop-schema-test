@@ -88,7 +88,7 @@ jobs:
           echo "Waiting for PR to be mergeable..."
           for i in {1..30}; do
             MERGEABLE=$(gh pr view ${{ steps.create-pull-request.outputs.pull-request-url }} --json mergeable --jq .mergeable)
-            echo "mergeable = $MERGEABLE"
+            echo "MERGEABLE = $MERGEABLE"
             if [[ "$MERGEABLE" == "MERGEABLE" || "$MERGEABLE" == "mergeable" ]]; then
               break
             fi
