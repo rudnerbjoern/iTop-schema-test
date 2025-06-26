@@ -1,4 +1,12 @@
-name: Auto-update schema.xsd
+#
+# GitHub Actions Workflow: Combine XSD Schema v3.2
+#
+# This workflow runs on every push to the 'main' branch.
+# It combines modular XSD files into a single file, formats the result
+# using xmlstarlet, uploads it as an artifact, and creates a pull request.
+#
+
+name: Combine XSD Schema v3.2
 
 on:
   push:
