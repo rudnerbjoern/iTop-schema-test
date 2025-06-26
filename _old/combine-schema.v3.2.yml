@@ -15,7 +15,7 @@ on:
     paths:
       - '3.2/**'
       - 'scripts/**'
-      - '.github/workflows/combine-schema.yml'
+      - '.github/workflows/combine-schema.v3.2.yml'
 
 jobs:
   combine-schema:
@@ -30,95 +30,134 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      - name: Install Python dependencies
-        run: pip install -r scripts/requirements.txt
-
-      - name: Install xmlstarlet
-        run: sudo apt-get update && sudo apt-get install -y xmlstarlet
-
-      - name: Create update branch
+      - name: Install dependencies
         run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
-          git checkout -b auto/schema-update
+          sudo apt-get update && sudo apt-get install -y xmlstarlet
+          pip install -r scripts/requirements.txt
 
-      - name: Combine XSD schema into single file
-        run: python scripts/combine_schema.py $INPUT_FILE $OUTPUT_FILE
+      - name: Combine and clean XSD schema
+        run: |
+          set -e
+          echo "Combining input schema: $INPUT_FILE"
+          python scripts/combine_schema.py $INPUT_FILE $OUTPUT_FILE
 
-      - name: Show file content before formatting
+          echo "Cleaning and formatting schema file..."
+          xmlstarlet ed -N xs="http://www.w3.org/2001/XMLSchema" \
+            -u '//xs:documentation' -x 'normalize-space(.)' "$OUTPUT_FILE" | \
+          xmlstarlet fo > "${OUTPUT_FILE}.tmp"
+          mv "${OUTPUT_FILE}.tmp" "$OUTPUT_FILE"
+
+      - name: Show file content before pull request
         run: |
           echo "Head:"
           head -n 20 "$OUTPUT_FILE"
           echo "Tail:"
           tail -n 20 "$OUTPUT_FILE"
 
-      - name: Try formatting with xmlstarlet (debug)
-        run: |
-          echo "Checking syntax of output file before formatting:"
-          head -n 20 "$OUTPUT_FILE"
-
-          echo "Running xmlstarlet formatting:"
-          if xmlstarlet fo "$OUTPUT_FILE" > tmp.xml; then
-            mv tmp.xml "$OUTPUT_FILE"
-            echo "✅ Formatting succeeded."
-          else
-            echo "❌ xmlstarlet formatting failed"
-            echo "Dumping last lines of original output file for analysis:"
-            tail -n 20 "$OUTPUT_FILE"
-            exit 1
-          fi
-
-      - name: Show file content after formatting
-        run: cat "$OUTPUT_FILE"
-
-      - name: Upload merged XSD as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: combined-xsd
-          path: ${{ env.OUTPUT_FILE }}
-
-      - name: Commit combined schema
-        id: commit
-        run: |
-          git add $OUTPUT_FILE || echo "No changes to add"
-          git status
-          if ! git diff --cached --quiet; then
-            git commit -m "Auto-update combined schema"
-            if git ls-remote --exit-code --heads origin auto/schema-update; then
-              git pull --rebase origin auto/schema-update || echo "Rebase failed or not needed"
-            else
-              echo "Remote branch does not exist yet – skipping rebase."
-            fi
-            git push origin auto/schema-update || echo "Push failed"
-            echo "changes_present=true" >> $GITHUB_ENV
-          else
-            echo "No changes to commit."
-            echo "changes_present=false" >> $GITHUB_ENV
-          fi
-
-      - name: Create pull request with updated schema
-        id: cpr
-        if: env.changes_present == 'true'
-        uses: peter-evans/create-pull-request@v5
+      - name: Create pull request
+        id: create-pull-request
+        uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: Auto-update combined schema
-          delete-branch: true
-          branch: auto/schema-update
-          title: 'Auto-update combined schema'
-          body: 'This PR was automatically created by the Combine XSD Schema workflow.'
+          commit-message: "Auto: Update itop_design.xsd"
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          branch: auto/update-schema
           base: main
+          title: "Auto: Update itop_design.xsd"
+          body: "This PR was automatically created by a GitHub Action."
+          labels: auto-update
+          draft: false
+          delete-branch: true
 
-      - name: Enable Pull Request Automerge
-        if: steps.cpr.outputs.pull-request-operation == 'created'
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: squash
+      - name: Wait for PR to be mergeable
+        run: |
+          echo "Waiting for PR to be mergeable..."
+          for i in {1..30}; do
+            MERGEABLE=$(gh pr view ${{ steps.create-pull-request.outputs.pull-request-url }} --json mergeable --jq .mergeable)
+            echo "mergeable = $MERGEABLE"
+            if [[ "$MERGEABLE" == "MERGEABLE" || "$MERGEABLE" == "mergeable" ]]; then
+              break
+            fi
+            echo "Still not mergeable, retrying in 10s... ($i/30)"
+            sleep 10
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: Print and wait for PR checks
+        run: |
+          gh pr checks ${{ steps.create-pull-request.outputs.pull-request-url }} --watch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail if any required check failed
+        run: |
+          # Get checks output and detect failures
+          gh pr checks ${{ steps.create-pull-request.outputs.pull-request-url }} > checks.txt
+          if grep -E '(X|Failed|failure)' checks.txt; then
+            echo "Some checks failed."
+            cat checks.txt
+            exit 1
+          else
+            echo "All checks passed."
+          fi
+
+
+      - name: Wait for required status check to pass
+        run: |
+          echo "Pausing before status checks..."
+          sleep 10
+          echo "Waiting for required status check 'validate-xml' to pass..."
+          for i in {1..30}; do
+            STATE=$(gh pr checks ${{ steps.create-pull-request.outputs.pull-request-url }} --json name,state --jq ".[] | select(.name==\"validate-xml\") | .state" 2>/dev/null || echo "none")
+            echo "validate-xml = $STATE"
+            if [[ "$STATE" == "success" || "$STATE" == "none" ]]; then
+              echo "validate-xml check passed."
+              break
+            fi
+            echo "validate-xml not successful yet, retrying in 10s... ($i/30)"
+            sleep 10
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge PR manually
+        run: |
+          echo "Pausing before manual merge..."
+          sleep 10
+          echo "Merging PR manually via gh CLI..."
+          gh pr merge ${{ steps.create-pull-request.outputs.pull-request-url }} --squash --admin
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete branch after merge
+        if: ${{ steps.create-pull-request.outputs.pull-request-operation == 'updated' || steps.create-pull-request.outputs.pull-request-operation == 'created' }}
+        run: |
+          echo "Waiting for merge..."
+          for i in {1..30}; do
+            MERGED_AT=$(gh pr view ${{ steps.create-pull-request.outputs.pull-request-url }} --json mergedAt --jq .mergedAt)
+            if [ "$MERGED_AT" != "null" ]; then
+              echo "PR merged at $MERGED_AT, deleting branch..."
+              git push origin --delete auto/update-schema
+              break
+            fi
+            echo "Not merged yet, retrying in 10s... ($i/30)"
+            sleep 10
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
