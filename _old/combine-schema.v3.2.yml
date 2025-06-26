@@ -1,0 +1,124 @@
+#
+# GitHub Actions Workflow: Combine XSD Schema v3.2
+#
+# This workflow runs on every push to the 'main' branch.
+# It combines modular XSD files into a single file, formats the result
+# using xmlstarlet, uploads it as an artifact, and creates a pull request.
+#
+
+name: Combine XSD Schema v3.2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '3.2/**'
+      - 'scripts/**'
+      - '.github/workflows/combine-schema.yml'
+
+jobs:
+  combine-schema:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      INPUT_FILE: 3.2/itop_design.xsd
+      OUTPUT_FILE: dist/3.2/itop_design.xsd
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Install xmlstarlet
+        run: sudo apt-get update && sudo apt-get install -y xmlstarlet
+
+      - name: Create update branch
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git checkout -b auto/schema-update
+
+      - name: Combine XSD schema into single file
+        run: python scripts/combine_schema.py $INPUT_FILE $OUTPUT_FILE
+
+      - name: Show file content before formatting
+        run: |
+          echo "Head:"
+          head -n 20 "$OUTPUT_FILE"
+          echo "Tail:"
+          tail -n 20 "$OUTPUT_FILE"
+
+      - name: Try formatting with xmlstarlet (debug)
+        run: |
+          echo "Checking syntax of output file before formatting:"
+          head -n 20 "$OUTPUT_FILE"
+
+          echo "Running xmlstarlet formatting:"
+          if xmlstarlet fo "$OUTPUT_FILE" > tmp.xml; then
+            mv tmp.xml "$OUTPUT_FILE"
+            echo "✅ Formatting succeeded."
+          else
+            echo "❌ xmlstarlet formatting failed"
+            echo "Dumping last lines of original output file for analysis:"
+            tail -n 20 "$OUTPUT_FILE"
+            exit 1
+          fi
+
+      - name: Show file content after formatting
+        run: cat "$OUTPUT_FILE"
+
+      - name: Upload merged XSD as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: combined-xsd
+          path: ${{ env.OUTPUT_FILE }}
+
+      - name: Commit combined schema
+        id: commit
+        run: |
+          git add $OUTPUT_FILE || echo "No changes to add"
+          git status
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-update combined schema"
+            if git ls-remote --exit-code --heads origin auto/schema-update; then
+              git pull --rebase origin auto/schema-update || echo "Rebase failed or not needed"
+            else
+              echo "Remote branch does not exist yet – skipping rebase."
+            fi
+            git push origin auto/schema-update || echo "Push failed"
+            echo "changes_present=true" >> $GITHUB_ENV
+          else
+            echo "No changes to commit."
+            echo "changes_present=false" >> $GITHUB_ENV
+          fi
+
+      - name: Create pull request with updated schema
+        id: cpr
+        if: env.changes_present == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Auto-update combined schema
+          delete-branch: true
+          branch: auto/schema-update
+          title: 'Auto-update combined schema'
+          body: 'This PR was automatically created by the Combine XSD Schema workflow.'
+          base: main
+
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
