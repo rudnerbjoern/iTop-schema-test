@@ -40,19 +40,17 @@ jobs:
           sudo apt-get update && sudo apt-get install -y xmlstarlet
           pip install -r scripts/requirements.txt
 
-      - name: Combine and format XSD schema
+      - name: Combine and clean XSD schema
         run: |
           set -e
           echo "Combining input schema: $INPUT_FILE"
           python scripts/combine_schema.py $INPUT_FILE $OUTPUT_FILE
 
-          echo "Formatting schema file with xmlstarlet..."
-          xmlstarlet fo "$OUTPUT_FILE" > "${OUTPUT_FILE}.formatted"
-          mv "${OUTPUT_FILE}.formatted" "$OUTPUT_FILE"
-
-          echo "Normalizing <xs:documentation> contents..."
-          xmlstarlet ed -N xs="http://www.w3.org/2001/XMLSchema" -L \
-            -u '//xs:documentation' -x 'normalize-space(.)' "$OUTPUT_FILE"
+          echo "Cleaning and formatting schema file..."
+          xmlstarlet ed -N xs="http://www.w3.org/2001/XMLSchema" \
+            -u '//xs:documentation' -x 'normalize-space(.)' "$OUTPUT_FILE" | \
+          xmlstarlet fo > "${OUTPUT_FILE}.tmp"
+          mv "${OUTPUT_FILE}.tmp" "$OUTPUT_FILE"
 
       - name: Show file content before pull request
         run: |
