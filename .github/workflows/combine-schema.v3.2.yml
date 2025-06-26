@@ -99,15 +99,23 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
-      - name: Print and wait for PR checks
+      - name: Wait for PR checks (ignore error if none)
+        id: check-pr-checks
         run: |
-          gh pr checks ${{ steps.create-pull-request.outputs.pull-request-url }} --watch
+          CHECK_OUTPUT=$(gh pr checks ${{ steps.create-pull-request.outputs.pull-request-url }} 2>&1 || true)
+          echo "CHECK_OUTPUT = $CHECK_OUTPUT"
+          if echo "$CHECK_OUTPUT" | grep -q 'no checks reported'; then
+            echo "checks_present=false" >> $GITHUB_OUTPUT
+          else
+            echo "checks_present=true" >> $GITHUB_OUTPUT
+            gh pr checks ${{ steps.create-pull-request.outputs.pull-request-url }} --watch || echo "Check watch failed."
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fail if any required check failed
+        if: steps.check-pr-checks.outputs.checks_present == 'true'
         run: |
-          # Get checks output and detect failures
           gh pr checks ${{ steps.create-pull-request.outputs.pull-request-url }} > checks.txt
           if grep -E '(X|Failed|failure)' checks.txt; then
             echo "Some checks failed."
