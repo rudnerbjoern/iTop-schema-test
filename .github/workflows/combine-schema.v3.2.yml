@@ -52,7 +52,11 @@ jobs:
         run: python scripts/combine_schema.py $INPUT_FILE $OUTPUT_FILE
 
       - name: Show file content before formatting
-        run: cat "$OUTPUT_FILE"
+        run: |
+          echo "Head:"
+          head -n 20 "$OUTPUT_FILE"
+          echo "Tail:"
+          tail -n 20 "$OUTPUT_FILE"
 
       - name: Try formatting with xmlstarlet (debug)
         run: |
