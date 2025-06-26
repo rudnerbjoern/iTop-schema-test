@@ -87,9 +87,9 @@ jobs:
         run: |
           echo "Waiting for merge..."
           for i in {1..30}; do
-            PR_STATE=$(gh pr view ${{ steps.create-pull-request.outputs.pull-request-url }} --json merged --jq .merged)
-            if [ "$PR_STATE" = "true" ]; then
-              echo "PR merged, deleting branch..."
+            MERGED_AT=$(gh pr view ${{ steps.create-pull-request.outputs.pull-request-url }} --json mergedAt --jq .mergedAt)
+            if [ "$MERGED_AT" != "null" ]; then
+              echo "PR merged at $MERGED_AT, deleting branch..."
               git push origin --delete auto/update-schema
               break
             fi
