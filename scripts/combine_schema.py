@@ -1,4 +1,5 @@
 from lxml import etree
+from datetime import datetime
 import os
 import sys
 import tempfile
@@ -52,12 +53,14 @@ def main():
 
     root = master_tree.getroot()
     comment = etree.Comment(
-    """
+    f"""
   This schema file was automatically generated from modular XSD components.
   Provided by the iTop-schema project by Björn Rudner.
 
   Project website: https://rudnerbjoern.github.io/iTop-schema/
   GitHub repository: https://github.com/rudnerbjoern/iTop-schema
+
+  Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} UTC
 
   Use this file to validate your iTop datamodels with confidence and consistency.
     """
