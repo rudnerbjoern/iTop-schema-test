@@ -5,11 +5,19 @@ on:
     branches:
       - main
     paths:
-      - '3.2/itop_design.xsd'
+      - '3.2/**'
+      - 'scripts/**'
+      - '.github/workflows/combine-schema.v3.2.yml'
 
 jobs:
   combine-schema:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      INPUT_FILE: 3.2/itop_design.xsd
+      OUTPUT_FILE: dist/3.2/itop_design.xsd
 
     steps:
       - name: Checkout repository
@@ -22,10 +30,23 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Run script to copy schema
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Combine XSD schema into single file
+        run: python scripts/combine_schema.py $INPUT_FILE $OUTPUT_FILE
+
+      - name: Show file content before formatting
         run: |
-          mkdir -p dist/3.2/
-          cp 3.2/itop_design.xsd dist/3.2/
+          echo "Head:"
+          head -n 20 "$OUTPUT_FILE"
+          echo "Tail:"
+          tail -n 20 "$OUTPUT_FILE"
 
       - name: Create pull request
         id: create-pull-request
