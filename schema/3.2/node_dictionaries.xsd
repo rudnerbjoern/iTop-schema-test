@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="../common/types.xsd" />
+
+    <xs:complexType name="dictionariesNode">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="dictionary" type="dictionaryNode" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="dictionaryNode">
+        <xs:sequence>
+            <xs:element name="english_description" type="xs:string" minOccurs="0" />
+            <xs:element name="localized_description" type="xs:string" minOccurs="0" />
+            <xs:element name="entries">
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:element name="entry" type="alteredIdString" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attributeGroup ref="alteredNode" />
+    </xs:complexType>
+
+</xs:schema>

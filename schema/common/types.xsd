@@ -236,7 +236,6 @@
         </xs:simpleContent>
     </xs:complexType>
 
-
     <xs:complexType name="alteredIdString">
         <xs:annotation>
             <xs:documentation>

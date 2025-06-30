@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="../common/types.xsd" />
+
+    <xs:complexType name="PortalBrick" abstract="true">
+        <xs:all>
+            <!-- these elements are from AbstractBrick -->
+            <xs:element name="mandatory" type="xs:string" minOccurs="0" />
+            <xs:element name="active" type="xs:boolean" default="true" minOccurs="0" />
+
+            <xs:element name="rank" minOccurs="0">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="default" type="alteredFloat" minOccurs="0" />
+                        <xs:element name="home" type="alteredFloat" minOccurs="0" />
+                        <xs:element name="navigation_menu" type="alteredFloat" minOccurs="0" />
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="templates" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:element name="template">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="alteredString">
+                                        <xs:attribute name="id" use="required">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:enumeration value="tile" />
+                                                    <xs:enumeration value="page" />
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="title" minOccurs="0">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="default" type="alteredString" minOccurs="0" />
+                        <xs:element name="home" type="alteredString" minOccurs="0" />
+                        <xs:element name="navigation_menu" type="alteredString" minOccurs="0" />
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="description" type="alteredString" minOccurs="0" />
+            <xs:element name="data_loading" type="alteredString" minOccurs="0" />
+            <xs:element name="security" minOccurs="0">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="allowed_profiles" type="alteredString" />
+                        <xs:element name="denied_profiles" type="alteredString" />
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+
+            <!-- these elements are from PortalBrick -->
+            <xs:element name="width" default="3" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:minInclusive value="1" />
+                        <xs:maxInclusive value="12" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="height" type="xs:nonNegativeInteger" default="1" minOccurs="0" />
+            <xs:element name="modal" type="xs:boolean" minOccurs="0" />
+            <xs:element name="visible" minOccurs="0">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="default" type="xs:boolean" default="true" minOccurs="0" />
+                        <xs:element name="home" type="xs:boolean" default="true" minOccurs="0" />
+                        <xs:element name="navigation_menu" type="xs:boolean" default="true" minOccurs="0" />
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="decoration_class" minOccurs="0">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="default" type="alteredString" minOccurs="0" />
+                        <xs:element name="home" type="alteredString" minOccurs="0" />
+                        <xs:element name="navigation_menu" type="alteredString" minOccurs="0" />
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="tile_controller_action" type="xs:string" minOccurs="0" />
+            <xs:element name="opening_target" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="modal" />
+                        <xs:enumeration value="new" />
+                        <xs:enumeration value="self" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+
+            <!-- these elements are from BrowseBrick -->
+            <xs:element name="levels" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="level" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="browse_modes" minOccurs="0" />
+            <xs:element name="default_list_length" default="20" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:enumeration value="-1" />
+                        <xs:enumeration value="10" />
+                        <xs:enumeration value="20" />
+                        <xs:enumeration value="50" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="levels" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="level">
+                            <xs:complexType>
+                                <xs:attribute name="id" type="xs:string" use="required" />
+                                <xs:attributeGroup ref="alteredNode" />
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <!-- these elements are from ManageBrick -->
+            <xs:element name="class" type="alteredString" minOccurs="0" />
+            <xs:element name="oql" type="alteredString" minOccurs="0" />
+            <xs:element name="opening_mode" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="view" />
+                        <xs:enumeration value="edit" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="display_modes" minOccurs="0">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="availables">
+                            <xs:complexType>
+                                <xs:sequence maxOccurs="unbounded">
+                                    <xs:element name="mode" type="alteredIdString" />
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="default" type="xs:string" />
+                        <xs:element name="tile" type="xs:string" />
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="fields" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:element name="field">
+                            <xs:complexType>
+                                <xs:attribute name="id" type="xs:string" use="required" />
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="export" minOccurs="0">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="fields" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence maxOccurs="unbounded">
+                                    <xs:element name="field">
+                                        <xs:complexType>
+                                            <xs:attribute name="id" type="xs:string" use="required" />
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="export_default_fields" type="xs:boolean" minOccurs="0" />
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="grouping" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="tabs">
+                            <xs:complexType>
+                                <xs:all>
+                                    <xs:element name="show_tab_counts" type="xs:boolean" default="false" minOccurs="0" />
+                                    <xs:element name="attribute" type="xs:string" minOccurs="0" />
+                                    <xs:element name="limit" type="xs:nonNegativeInteger" minOccurs="0" />
+                                    <xs:element name="show_others" type="xs:boolean" default="false" minOccurs="0" />
+                                    <xs:element name="groups" minOccurs="0">
+                                        <xs:complexType>
+                                            <xs:sequence maxOccurs="unbounded">
+                                                <xs:element name="group">
+                                                    <xs:complexType>
+                                                        <xs:all>
+                                                            <xs:element name="rank" type="alteredFloat" minOccurs="0" />
+                                                            <xs:element name="title" type="alteredString" minOccurs="0" />
+                                                            <xs:element name="description" type="alteredString" minOccurs="0" />
+                                                            <xs:element name="condition" type="alteredString" minOccurs="0" />
+                                                        </xs:all>
+                                                        <xs:attribute name="id" type="xs:string" use="required" />
+                                                    </xs:complexType>
+                                                </xs:element>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:all>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <!-- <xs:any processContents="lax" /> -->
+        </xs:all>
+        <!-- these attributes are from AbstractBrick -->
+        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attributeGroup ref="alteredNode" />
+    </xs:complexType>
+
+    <xs:complexType name="AggregatePageBrick">
+        <xs:complexContent>
+            <xs:extension base="PortalBrick" />
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="BrowseBrick">
+        <xs:complexContent>
+            <xs:extension base="PortalBrick" />
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="CreateBrick">
+        <xs:complexContent>
+            <xs:extension base="PortalBrick" />
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="FilterBrick">
+        <xs:complexContent>
+            <xs:extension base="PortalBrick" />
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ManageBrick">
+        <xs:complexContent>
+            <xs:extension base="PortalBrick" />
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="UserProfileBrick">
+        <xs:complexContent>
+            <xs:extension base="PortalBrick" />
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>
