@@ -1166,7 +1166,87 @@
         </parameters>
     </module_parameters>
     <!-- ***************** Module Designs ***************** -->
-    <module_designs />
+    <module_designs>
+        <module_design id="itop-portal" _delta="must_exist">
+            <bricks>
+                <brick id="services" xsi:type="BrowseBrick" _delta="must_exist">
+                    <levels>
+                        <level id="1" _delta="must_exist">
+                            <!-- Service Family -->
+                            <levels>
+                                <level id="1" _delta="must_exist">
+                                    <!-- Service  -->
+                                    <class _delta="delete" />
+                                    <oql _delta="define"><![CDATA[SELECT Service WHERE Service.status = 'production']]></oql>
+                                    <levels>
+                                        <level id="1" _delta="must_exist">
+                                            <!-- Service Subcategory -->
+                                            <oql _delta="redefine"><![CDATA[SELECT ServiceSubcategory WHERE ServiceSubcategory.status = 'production']]></oql>
+                                        </level>
+                                    </levels>
+                                </level>
+                            </levels>
+                        </level>
+                    </levels>
+                    <browse_modes>
+                        <availables>
+                            <!-- Change iTop Portal to use Mosaic as default visualization for services -->
+                            <mode id="mosaic" _delta="define_if_not_exists" />
+                            <mode id="list" _delta="define_if_not_exists" />
+                        </availables>
+                        <default _delta="redefine">mosaic</default>
+                    </browse_modes>
+                </brick>
+                <brick id="cis-for-portal-user" xsi:type="ManageBrick" _delta="define">
+                    <active>true</active>
+                    <rank>
+                        <navigation_menu>70</navigation_menu>
+                        <default>70</default>
+                    </rank>
+                    <visible>
+                        <home>true</home>
+                    </visible>
+                    <width>12</width>
+                    <title>
+                        <default>Brick:Portal:ListAllCIs:Title</default>
+                    </title>
+                    <description>Brick:Portal:ListAllCIs:Title+</description>
+                    <decoration_class>
+                        <default>fas fa-desktop fa-2x</default>
+                    </decoration_class>
+                    <class>FunctionalCI</class>
+                    <fields>
+                        <field id="finalclass" />
+                        <field id="org_id" />
+                        <field id="move2production" />
+                    </fields>
+                    <grouping>
+                        <tabs>
+                            <show_tab_counts>true</show_tab_counts>
+                            <groups>
+                                <group id="all">
+                                    <rank>1</rank>
+                                    <title>some grouping here</title>
+                                    <condition><![CDATA[SELECT FunctionalCI]]></condition>
+                                </group>
+                            </groups>
+                        </tabs>
+                    </grouping>
+                    <data_loading>auto</data_loading>
+                    <export>
+                        <export_default_fields>true</export_default_fields>
+                    </export>
+                </brick>
+                <brick id="template" xsi:type="ManageBrick" _delta="define">
+                    <templates>
+                        <template id="tile">path-to-template</template>
+                        <template id="page" _delta="define">path-to-template2</template>
+                    </templates>
+                    <opening_target>self</opening_target>
+                </brick>
+            </bricks>
+        </module_design>
+    </module_designs>
     <!-- ***************** Snippets ***************** -->
     <snippets>
         <snippet id="snippet-1">
