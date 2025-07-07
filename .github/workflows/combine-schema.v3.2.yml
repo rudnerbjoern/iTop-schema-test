@@ -112,13 +112,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Wait for PR checks
-        id: check-pr-checks
+      - name: Wait for validate-xml status check
         shell: bash
         run: |
-          PR_URL="${{ steps.cpr.outputs.pull-request-url }}"
+          PR_BRANCH="auto/update-schema"
           for i in {1..40}; do
-            CHECK_STATUS=$(gh pr checks "$PR_URL" | grep 'validate-xml' | awk '{print $2}')
+            CHECK_STATUS=$(gh api repos/${{ github.repository }}/commits/$(git rev-parse $PR_BRANCH)/check-runs --jq '.check_runs[] | select(.name=="validate-xml") | .conclusion' | head -n1)
             echo "validate-xml status: $CHECK_STATUS"
             if [[ "$CHECK_STATUS" == "success" ]]; then
               echo "validate-xml check passed!"
@@ -127,7 +126,7 @@ jobs:
               echo "validate-xml check failed!"
               exit 1
             fi
-            sleep 15
+            sleep 10
           done
           echo "Timeout waiting for validate-xml check."
           exit 1
