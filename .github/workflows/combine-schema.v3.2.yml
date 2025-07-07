@@ -59,6 +59,11 @@ jobs:
           xmlstarlet fo > "${OUTPUT_FILE}.tmp"
           mv "${OUTPUT_FILE}.tmp" "$OUTPUT_FILE"
 
+      - name: Debug - Git status and diff
+        run: |
+          git status
+          git diff --stat
+
       - name: Upload combined schema artifact
         uses: actions/upload-artifact@v4
         with:
@@ -82,6 +87,8 @@ jobs:
           labels: auto-update
           draft: false
           delete-branch: true
+          add-paths: |
+            dist/3.2/itop_design.xsd
 
       - name: Wait for PR to be mergeable
         shell: bash
