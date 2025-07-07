@@ -4,9 +4,13 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - auto/update-schema
 
 jobs:
   validate-xml:
+    name: validate-xml
     runs-on: ubuntu-latest
     env:
       XSD_PATH: schema/3.2/itop_design.xsd
