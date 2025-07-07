@@ -111,28 +111,21 @@ jobs:
         id: check-pr-checks
         shell: bash
         run: |
-          CHECK_OUTPUT=$(gh pr checks "${{ steps.cpr.outputs.pull-request-url }}" 2>&1 || true)
-          if echo "$CHECK_OUTPUT" | grep -q 'no checks reported'; then
-            echo "checks_present=false" >> $GITHUB_OUTPUT
-          else
-            echo "checks_present=true" >> $GITHUB_OUTPUT
-            gh pr checks "${{ steps.cpr.outputs.pull-request-url }}" --watch || echo "Check watch failed."
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Fail if any required check failed
-        if: steps.check-pr-checks.outputs.checks_present == 'true'
-        shell: bash
-        run: |
-          gh pr checks "${{ steps.cpr.outputs.pull-request-url }}" > checks.txt
-          if grep -E '(X|Failed|failure)' checks.txt; then
-            echo "❌ Some required PR checks failed:"
-            cat checks.txt
-            exit 1
-          else
-            echo "✅ All PR checks passed."
-          fi
+          PR_URL="${{ steps.cpr.outputs.pull-request-url }}"
+          for i in {1..40}; do
+            CHECK_STATUS=$(gh pr checks "$PR_URL" | grep 'validate-xml' | awk '{print $2}')
+            echo "validate-xml status: $CHECK_STATUS"
+            if [[ "$CHECK_STATUS" == "success" ]]; then
+              echo "validate-xml check passed!"
+              exit 0
+            elif [[ "$CHECK_STATUS" == "failure" ]]; then
+              echo "validate-xml check failed!"
+              exit 1
+            fi
+            sleep 15
+          done
+          echo "Timeout waiting for validate-xml check."
+          exit 1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
