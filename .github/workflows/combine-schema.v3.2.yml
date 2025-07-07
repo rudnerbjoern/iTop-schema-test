@@ -107,7 +107,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Wait for PR checks (ignore error if none)
+      - name: List all checks for PR
+        run: gh pr checks "${{ steps.cpr.outputs.pull-request-url }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for PR checks
         id: check-pr-checks
         shell: bash
         run: |
