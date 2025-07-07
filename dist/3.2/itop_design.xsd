@@ -6,14 +6,14 @@
   Project website: https://rudnerbjoern.github.io/iTop-schema/
   GitHub repository: https://github.com/rudnerbjoern/iTop-schema
 
-  Generated on: 2025-06-26 14:05:51 UTC
+  Generated on: 2025-07-07 08:22:52 UTC
 
   Use this file to validate your iTop datamodels with confidence and consistency.
     -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="3.2" attributeFormDefault="unqualified" elementFormDefault="qualified">
   <xs:element name="itop_design">
     <xs:annotation>
-      <xs:documentation source="https://www.itophub.io/wiki/page?id=3_2_0:customization:xml_reference#xml_general_structure">Structural node. No comments are allowed before this tag.</xs:documentation>
+      <xs:documentation source="https://www.itophub.io/wiki/page?id=3_2_0:customization:xml_reference#xml_general_structure">Structural node. No comments are allowed before this tag. Test run: 4</xs:documentation>
     </xs:annotation>
     <xs:complexType>
       <xs:all>
@@ -37,113 +37,60 @@
             <xs:documentation>Implementation of the user rights policy: users will have one or more profiles, granting them access rights.</xs:documentation>
           </xs:annotation>
         </xs:element>
-        <xs:element name="files" minOccurs="0">
+        <xs:element name="files" type="filesNode" minOccurs="0">
           <xs:annotation>
             <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:xml_reference#files">The “files” structure allow to embed binary files (for examples image files used for the object's icons) directly in an XML delta definition file.</xs:documentation>
           </xs:annotation>
-          <xs:complexType>
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
-              <xs:element name="file"/>
-            </xs:sequence>
-          </xs:complexType>
         </xs:element>
-        <xs:element name="dictionaries" minOccurs="0">
+        <xs:element name="dictionaries" type="dictionariesNode" minOccurs="0">
           <xs:annotation>
             <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:xml_reference#dictionaries">For adding localizations into the XML.</xs:documentation>
           </xs:annotation>
-          <xs:complexType>
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
-              <xs:element name="dictionary" type="dictionaryNode"/>
-            </xs:sequence>
-          </xs:complexType>
         </xs:element>
         <xs:element name="branding" type="brandingNode" minOccurs="0">
           <xs:annotation>
             <xs:documentation>Appearance of the GUI</xs:documentation>
           </xs:annotation>
         </xs:element>
-        <xs:element name="constants" minOccurs="0">
+        <xs:element name="constants" type="constantsNode" minOccurs="0">
           <xs:annotation>
             <xs:documentation>Constants to be compiled as PHP defines</xs:documentation>
           </xs:annotation>
-          <xs:complexType>
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
-              <xs:element name="constant" type="alteredIdString"/>
-            </xs:sequence>
-          </xs:complexType>
         </xs:element>
-        <xs:element name="portals" minOccurs="0">
+        <xs:element name="portals" type="portalsNode" minOccurs="0">
           <xs:annotation>
             <xs:documentation>Definition of entry points for the user interface</xs:documentation>
           </xs:annotation>
-          <xs:complexType>
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
-              <xs:element name="portal" type="portalNode"/>
-            </xs:sequence>
-          </xs:complexType>
         </xs:element>
-        <xs:element name="module_parameters" minOccurs="0">
+        <xs:element name="module_parameters" type="moduleParametersNode" minOccurs="0">
           <xs:annotation>
             <xs:documentation>Definition of module specific parameters</xs:documentation>
           </xs:annotation>
-          <xs:complexType>
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
-              <xs:element name="parameters">
-                <xs:complexType>
-                  <xs:choice maxOccurs="unbounded">
-                    <xs:any processContents="lax"/>
-                  </xs:choice>
-                  <xs:attribute name="id" type="xs:string" use="required"/>
-                  <xs:attributeGroup ref="alteredNode"/>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
         </xs:element>
-        <xs:element name="module_designs" minOccurs="0">
+        <xs:element name="module_designs" type="moduleDesignsNode" minOccurs="0">
           <xs:annotation>
             <xs:documentation>Module specific design data</xs:documentation>
           </xs:annotation>
-          <xs:complexType>
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
-              <xs:element name="module_design" type="moduleDesignNode"/>
-            </xs:sequence>
-          </xs:complexType>
         </xs:element>
-        <xs:element name="snippets" minOccurs="0">
+        <xs:element name="snippets" type="snippetsNode" minOccurs="0">
           <xs:annotation>
             <xs:documentation>Snippets of PHP code to be injected in the PHP model files</xs:documentation>
           </xs:annotation>
-          <xs:complexType>
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
-              <xs:element name="snippet" type="snippetNode"/>
-            </xs:sequence>
-          </xs:complexType>
         </xs:element>
         <xs:element name="meta" type="metaNode" minOccurs="0">
           <xs:annotation>
             <xs:documentation source="https://www.itophub.io/wiki/page?id=latest:customization:xml_reference#meta">Usage of this tag is restricted to Combodo for driving ITSM Designer behavior. It is used to declare in XML stuff which are in PHP code and need to be known and manipulate by the ITSM Designer.</xs:documentation>
           </xs:annotation>
         </xs:element>
-        <xs:element name="events" minOccurs="0">
+        <xs:element name="events" type="eventsNode" minOccurs="0">
           <xs:annotation>
             <xs:documentation>Event definition list</xs:documentation>
           </xs:annotation>
-          <xs:complexType>
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
-              <xs:element name="event" type="eventNode"/>
-            </xs:sequence>
-          </xs:complexType>
         </xs:element>
-        <xs:element name="event_listeners" minOccurs="0">
+        <xs:element name="event_listeners" type="eventListenersNode" minOccurs="0">
           <xs:annotation>
             <xs:documentation>Global event listeners</xs:documentation>
           </xs:annotation>
-          <xs:complexType>
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
-              <xs:element name="event_listener" type="globalEventListenerNode"/>
-            </xs:sequence>
-          </xs:complexType>
         </xs:element>
       </xs:all>
       <xs:attribute name="version" type="xs:token" use="required" fixed="3.2"/>
@@ -160,20 +107,20 @@
   <!-- #############################################################
          ########################### nodes ###########################
          ############################################################# -->
-  <xs:complexType name="dictionaryNode">
-    <xs:sequence>
-      <xs:element name="english_description" type="xs:string" minOccurs="0"/>
-      <xs:element name="localized_description" type="xs:string" minOccurs="0"/>
-      <xs:element name="entries">
-        <xs:complexType>
-          <xs:sequence maxOccurs="unbounded">
-            <xs:element name="entry" type="alteredIdString"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
+  <xs:complexType name="filesNode">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="file"/>
     </xs:sequence>
-    <xs:attribute name="id" type="xs:string" use="required"/>
-    <xs:attributeGroup ref="alteredNode"/>
+  </xs:complexType>
+  <xs:complexType name="constantsNode">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="constant" type="alteredIdString"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="portalsNode">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="portal" type="portalNode"/>
+    </xs:sequence>
   </xs:complexType>
   <xs:complexType name="portalNode">
     <xs:all>
@@ -208,6 +155,24 @@
     <xs:attribute name="id" type="xs:string" use="required"/>
     <xs:attributeGroup ref="alteredNode"/>
   </xs:complexType>
+  <xs:complexType name="moduleParametersNode">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="parameters">
+        <xs:complexType>
+          <xs:choice maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="id" type="xs:string" use="required"/>
+          <xs:attributeGroup ref="alteredNode"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="moduleDesignsNode">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="module_design" type="moduleDesignNode"/>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="moduleDesignNode">
     <xs:all>
       <xs:element name="properties" minOccurs="0">
@@ -220,15 +185,7 @@
       <xs:element name="bricks" minOccurs="0">
         <xs:complexType>
           <xs:sequence maxOccurs="unbounded">
-            <xs:element name="brick">
-              <xs:complexType>
-                <xs:choice maxOccurs="unbounded">
-                  <xs:any processContents="lax"/>
-                </xs:choice>
-                <xs:attribute name="id" type="xs:string" use="required"/>
-                <xs:attributeGroup ref="alteredNode"/>
-              </xs:complexType>
-            </xs:element>
+            <xs:element name="brick" type="PortalBrick"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -431,6 +388,11 @@
     <xs:attribute name="id" type="xs:string" use="required"/>
     <xs:attributeGroup ref="alteredNode"/>
   </xs:complexType>
+  <xs:complexType name="snippetsNode">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="snippet" type="snippetNode"/>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="snippetNode">
     <xs:all>
       <xs:element name="placement" minOccurs="0">
@@ -448,54 +410,10 @@
     <xs:attribute name="id" type="xs:string" use="required"/>
     <xs:attributeGroup ref="alteredNode"/>
   </xs:complexType>
-  <xs:complexType name="eventNode">
-    <xs:all>
-      <xs:element name="name" type="xs:string" minOccurs="0"/>
-      <xs:element name="description" type="xs:string" minOccurs="0"/>
-      <xs:element name="internal" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="sources" minOccurs="0">
-        <xs:complexType>
-          <xs:sequence maxOccurs="unbounded">
-            <xs:element name="source" type="alteredIdString"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="arguments" minOccurs="0">
-        <xs:complexType>
-          <xs:sequence maxOccurs="unbounded">
-            <xs:element name="argument">
-              <xs:complexType>
-                <xs:all>
-                  <xs:element name="description" type="xs:string" minOccurs="0"/>
-                  <xs:element name="type" type="xs:string" minOccurs="0"/>
-                </xs:all>
-                <xs:attribute name="id" type="xs:string" use="required"/>
-                <xs:attributeGroup ref="alteredNode"/>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="replaces" type="xs:string" minOccurs="0"/>
-      <xs:element name="event_data" minOccurs="0">
-        <xs:complexType>
-          <xs:sequence maxOccurs="unbounded">
-            <xs:element name="event_datum">
-              <xs:complexType>
-                <xs:all>
-                  <xs:element name="description" type="xs:string" minOccurs="0"/>
-                  <xs:element name="type" type="xs:string" minOccurs="0"/>
-                </xs:all>
-                <xs:attribute name="id" type="xs:string" use="required"/>
-                <xs:attributeGroup ref="alteredNode"/>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-    </xs:all>
-    <xs:attribute name="id" type="xs:string" use="required"/>
-    <xs:attributeGroup ref="alteredNode"/>
+  <xs:complexType name="eventListenersNode">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="event_listener" type="globalEventListenerNode"/>
+    </xs:sequence>
   </xs:complexType>
   <xs:complexType name="globalEventListenerNode">
     <xs:all>
@@ -1903,6 +1821,255 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:complexType name="PortalBrick" abstract="true">
+    <xs:all>
+      <!-- these elements are from AbstractBrick -->
+      <xs:element name="mandatory" type="xs:string" minOccurs="0"/>
+      <xs:element name="active" type="xs:boolean" default="true" minOccurs="0"/>
+      <xs:element name="rank" minOccurs="0">
+        <xs:complexType>
+          <xs:all>
+            <xs:element name="default" type="alteredFloat" minOccurs="0"/>
+            <xs:element name="home" type="alteredFloat" minOccurs="0"/>
+            <xs:element name="navigation_menu" type="alteredFloat" minOccurs="0"/>
+          </xs:all>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="templates" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence maxOccurs="unbounded">
+            <xs:element name="template">
+              <xs:complexType>
+                <xs:simpleContent>
+                  <xs:extension base="alteredString">
+                    <xs:attribute name="id" use="required">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="tile"/>
+                          <xs:enumeration value="page"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:attribute>
+                  </xs:extension>
+                </xs:simpleContent>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="title" minOccurs="0">
+        <xs:complexType>
+          <xs:all>
+            <xs:element name="default" type="alteredString" minOccurs="0"/>
+            <xs:element name="home" type="alteredString" minOccurs="0"/>
+            <xs:element name="navigation_menu" type="alteredString" minOccurs="0"/>
+          </xs:all>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="description" type="alteredString" minOccurs="0"/>
+      <xs:element name="data_loading" type="alteredString" minOccurs="0"/>
+      <xs:element name="security" minOccurs="0">
+        <xs:complexType>
+          <xs:all>
+            <xs:element name="allowed_profiles" type="alteredString"/>
+            <xs:element name="denied_profiles" type="alteredString"/>
+          </xs:all>
+        </xs:complexType>
+      </xs:element>
+      <!-- these elements are from PortalBrick -->
+      <xs:element name="width" default="3" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="12"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="height" type="xs:nonNegativeInteger" default="1" minOccurs="0"/>
+      <xs:element name="modal" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="visible" minOccurs="0">
+        <xs:complexType>
+          <xs:all>
+            <xs:element name="default" type="xs:boolean" default="true" minOccurs="0"/>
+            <xs:element name="home" type="xs:boolean" default="true" minOccurs="0"/>
+            <xs:element name="navigation_menu" type="xs:boolean" default="true" minOccurs="0"/>
+          </xs:all>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="decoration_class" minOccurs="0">
+        <xs:complexType>
+          <xs:all>
+            <xs:element name="default" type="alteredString" minOccurs="0"/>
+            <xs:element name="home" type="alteredString" minOccurs="0"/>
+            <xs:element name="navigation_menu" type="alteredString" minOccurs="0"/>
+          </xs:all>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="tile_controller_action" type="xs:string" minOccurs="0"/>
+      <xs:element name="opening_target" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="modal"/>
+            <xs:enumeration value="new"/>
+            <xs:enumeration value="self"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <!-- these elements are from BrowseBrick -->
+      <xs:element name="levels" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="level"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="browse_modes" minOccurs="0"/>
+      <xs:element name="default_list_length" default="20" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:integer">
+            <xs:enumeration value="-1"/>
+            <xs:enumeration value="10"/>
+            <xs:enumeration value="20"/>
+            <xs:enumeration value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="levels" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="level">
+              <xs:complexType>
+                <xs:attribute name="id" type="xs:string" use="required"/>
+                <xs:attributeGroup ref="alteredNode"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <!-- these elements are from ManageBrick -->
+      <xs:element name="class" type="alteredString" minOccurs="0"/>
+      <xs:element name="oql" type="alteredString" minOccurs="0"/>
+      <xs:element name="opening_mode" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="view"/>
+            <xs:enumeration value="edit"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="display_modes" minOccurs="0">
+        <xs:complexType>
+          <xs:all>
+            <xs:element name="availables">
+              <xs:complexType>
+                <xs:sequence maxOccurs="unbounded">
+                  <xs:element name="mode" type="alteredIdString"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="default" type="xs:string"/>
+            <xs:element name="tile" type="xs:string"/>
+          </xs:all>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="fields" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence maxOccurs="unbounded">
+            <xs:element name="field">
+              <xs:complexType>
+                <xs:attribute name="id" type="xs:string" use="required"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="export" minOccurs="0">
+        <xs:complexType>
+          <xs:all>
+            <xs:element name="fields" minOccurs="0">
+              <xs:complexType>
+                <xs:sequence maxOccurs="unbounded">
+                  <xs:element name="field">
+                    <xs:complexType>
+                      <xs:attribute name="id" type="xs:string" use="required"/>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="export_default_fields" type="xs:boolean" minOccurs="0"/>
+          </xs:all>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="grouping" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="tabs">
+              <xs:complexType>
+                <xs:all>
+                  <xs:element name="show_tab_counts" type="xs:boolean" default="false" minOccurs="0"/>
+                  <xs:element name="attribute" type="xs:string" minOccurs="0"/>
+                  <xs:element name="limit" type="xs:nonNegativeInteger" minOccurs="0"/>
+                  <xs:element name="show_others" type="xs:boolean" default="false" minOccurs="0"/>
+                  <xs:element name="groups" minOccurs="0">
+                    <xs:complexType>
+                      <xs:sequence maxOccurs="unbounded">
+                        <xs:element name="group">
+                          <xs:complexType>
+                            <xs:all>
+                              <xs:element name="rank" type="alteredFloat" minOccurs="0"/>
+                              <xs:element name="title" type="alteredString" minOccurs="0"/>
+                              <xs:element name="description" type="alteredString" minOccurs="0"/>
+                              <xs:element name="condition" type="alteredString" minOccurs="0"/>
+                            </xs:all>
+                            <xs:attribute name="id" type="xs:string" use="required"/>
+                          </xs:complexType>
+                        </xs:element>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:all>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <!-- <xs:any processContents="lax" /> -->
+    </xs:all>
+    <!-- these attributes are from AbstractBrick -->
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attributeGroup ref="alteredNode"/>
+  </xs:complexType>
+  <xs:complexType name="AggregatePageBrick">
+    <xs:complexContent>
+      <xs:extension base="PortalBrick"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="BrowseBrick">
+    <xs:complexContent>
+      <xs:extension base="PortalBrick"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="CreateBrick">
+    <xs:complexContent>
+      <xs:extension base="PortalBrick"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FilterBrick">
+    <xs:complexContent>
+      <xs:extension base="PortalBrick"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ManageBrick">
+    <xs:complexContent>
+      <xs:extension base="PortalBrick"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="UserProfileBrick">
+    <xs:complexContent>
+      <xs:extension base="PortalBrick"/>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:complexType name="brandingNode">
     <xs:all>
       <xs:element name="main_logo" type="logoNode" minOccurs="0"/>
@@ -2576,6 +2743,80 @@
     </xs:complexContent>
   </xs:complexType>
   <!-- ########################### /Stimuli ########################### -->
+  <xs:complexType name="dictionariesNode">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="dictionary" type="dictionaryNode"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="dictionaryNode">
+    <xs:sequence>
+      <xs:element name="english_description" type="xs:string" minOccurs="0"/>
+      <xs:element name="localized_description" type="xs:string" minOccurs="0"/>
+      <xs:element name="entries">
+        <xs:complexType>
+          <xs:sequence maxOccurs="unbounded">
+            <xs:element name="entry" type="alteredIdString"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attributeGroup ref="alteredNode"/>
+  </xs:complexType>
+  <xs:complexType name="eventsNode">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="event" type="eventNode"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="eventNode">
+    <xs:all>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="internal" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="sources" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence maxOccurs="unbounded">
+            <xs:element name="source" type="alteredIdString"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="arguments" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence maxOccurs="unbounded">
+            <xs:element name="argument">
+              <xs:complexType>
+                <xs:all>
+                  <xs:element name="description" type="xs:string" minOccurs="0"/>
+                  <xs:element name="type" type="xs:string" minOccurs="0"/>
+                </xs:all>
+                <xs:attribute name="id" type="xs:string" use="required"/>
+                <xs:attributeGroup ref="alteredNode"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="replaces" type="xs:string" minOccurs="0"/>
+      <xs:element name="event_data" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence maxOccurs="unbounded">
+            <xs:element name="event_datum">
+              <xs:complexType>
+                <xs:all>
+                  <xs:element name="description" type="xs:string" minOccurs="0"/>
+                  <xs:element name="type" type="xs:string" minOccurs="0"/>
+                </xs:all>
+                <xs:attribute name="id" type="xs:string" use="required"/>
+                <xs:attributeGroup ref="alteredNode"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:all>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attributeGroup ref="alteredNode"/>
+  </xs:complexType>
   <xs:complexType name="metaNode">
     <xs:all>
       <xs:element name="classes" minOccurs="0">
